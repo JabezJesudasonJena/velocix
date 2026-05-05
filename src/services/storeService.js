@@ -10,8 +10,9 @@ export const getStore = async (data) => {
     return prismaStore;
 }
 
-export const createStore = async (data, role) => {
-    if (!role == 'storeadmin') throw new Error("user is not a store admin");
+export const createStore = async (data, tokenData) => {
+    if(tokenData.role != 'storeadmin') throw new Error("U must be store admin to create store")
+    if (data.ownerId != tokenData.id) throw new Error("only the owner of the store can create store")
     const prismaStore = await prisma.store.create({
         data : {
             name: data.name, 

@@ -19,4 +19,4 @@ export const sessionMiddleware = async (req, res, next) => {
         req.user = user;
         next();
     })
-}
+};
