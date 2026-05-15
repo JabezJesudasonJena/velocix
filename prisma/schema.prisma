@@ -1,11 +1,7 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Get free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -36,17 +32,32 @@ model Product {
     price Float
     storeId Int
     store Store @relation(fields: [storeId], references: [id])
-    orders Order[]
+    items Item[]
 }
 
 model Order {
     id Int @id @default(autoincrement())
     userId Int
     user User @relation(fields: [userId], references: [id])
-    productId Int
-    product Product @relation(fields: [productId], references: [id])
-    quantity Int
+    total Float
+    items Item[]
 }
+
+
+model Item {
+    id Int @id @default(autoincrement())
+    productId Int
+    orderId Int
+
+    quantity Int
+    price Float
+
+    order Order @relation(fields: [orderId], references: [id])
+    createdAt DateTime @default(now())
+    product Product @relation(fields: [productId], references: [id])
+}
+
+
 
 
 
