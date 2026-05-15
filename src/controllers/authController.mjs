@@ -13,7 +13,8 @@ export const signUpController = async (req, res) => {
 export const signInController = async (req, res) => {
     try {
         const token = await signInService(req.body);
-        res.status(200).json({token});
+        req.session.token = token;
+        res.status(200).json({token}); // Store the token in the session
     } catch (error) {
         res.status(400).json({msg : error.message});
     }
