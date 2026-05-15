@@ -2,7 +2,7 @@ import { createOrderService } from "../services/orderService.mjs";
 
 export const createOrderController = async (req , res) => {
     try{
-        const prismaOrder = await createOrderService(req.body);
+        const prismaOrder = await createOrderService(req.user.id, req.body);
         return res.status(200).json({Order: prismaOrder})
     }catch(err){    
         console.log(err.message)

@@ -1,10 +1,11 @@
 import prisma from "../db/prismadb.mjs";
 
-export const createOrderService = async (data) => {
+export const createOrderService = async (userId,data) => {
     try{
         const prismaOrder = await prisma.order.create({
             data : {
-                userId: data.userId,
+                userId: userId,
+                storeId: data.storeId,
                 total: data.total,
                 items: {
                     create : data.items.map(item =>({ 
@@ -17,7 +18,6 @@ export const createOrderService = async (data) => {
         })
         return prismaOrder
     }catch(err){
-        console.log(err)
         return {
             error: err.message
         }

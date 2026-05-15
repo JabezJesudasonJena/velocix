@@ -7,6 +7,7 @@ const orderRouter = Router();
 
 orderRouter.post(
     "/create",
+    sessionMiddleware,
     createOrderController
 )
 
