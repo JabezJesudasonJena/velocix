@@ -8,7 +8,10 @@ export const createProductService = async (data, user, store) => {
             data : {
                 name: data.name,
                 price: data.price,
-                storeId: data.storeId
+                storeId: data.storeId,
+                category: data.category,
+                isEdible: data.isEdible,
+                quantity: data.quantity
             }
         })
         return prismaProduct
