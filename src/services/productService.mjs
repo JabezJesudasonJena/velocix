@@ -20,3 +20,51 @@ export const createProductService = async (data, user, store) => {
     }
     
 }
+
+export const getSingleProductService = async (data) => {
+    try {
+        console.log(data)
+        const prismaProduct = await prisma.product.findMany({
+            where : {
+                id: data.id
+            }
+        })
+        return prismaProduct
+    }catch(err){
+        return err
+    }
+}
+
+export const getPaginatedProductService = async (data) => {
+    try {
+        const filteredPrismaProducts = await prisma.product.findMany({
+            skip:+data.skip,
+            take:+data.take
+        })
+        return filteredPrismaProducts
+    }catch(err){
+        return err
+    }
+}
+
+export const getSortedProductService = async () => {
+    try {
+        const prismaOrderdProducts = await prisma.product.findMany({
+            where:{
+                name: true
+            },
+            orderBy: {
+                name: "asc"
+            },
+            select: {
+                id : true, 
+                price: true, 
+                storeId: true,
+                category: true
+            }
+        })
+        return prismaOrderdProducts;
+    }catch(err){
+        return err
+    }
+}

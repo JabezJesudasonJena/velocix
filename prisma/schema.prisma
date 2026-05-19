@@ -46,6 +46,7 @@ model Order {
     total     Float
     storeId   Int
     createdAt DateTime @default(now())
+    status    String   @default("pending")
 
     // Relations
     user  User   @relation(fields: [userId], references: [id])

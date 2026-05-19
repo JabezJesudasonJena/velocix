@@ -11,6 +11,7 @@ export const createOrderService = async (userId,data) => {
                 userId: userId,
                 storeId: data.storeId,
                 total: total,
+                status: data.status,
                 items: {
                     create : data.items.map(item =>({ 
                             productId : item.productId,
