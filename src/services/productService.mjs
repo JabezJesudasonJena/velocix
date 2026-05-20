@@ -24,10 +24,10 @@ export const createProductService = async (data, user, store) => {
 export const getSingleProductService = async (data) => {
     try {
         console.log(data)
-        const prismaProduct = await prisma.product.findMany({
+        const prismaProduct = await prisma.product.findUnique({
             where : {
-                id: data.id
-            }
+                id: Number(data)
+            },
         })
         return prismaProduct
     }catch(err){
@@ -50,15 +50,13 @@ export const getPaginatedProductService = async (data) => {
 export const getSortedProductService = async () => {
     try {
         const prismaOrderdProducts = await prisma.product.findMany({
-            where:{
-                name: true
-            },
             orderBy: {
                 name: "asc"
             },
             select: {
                 id : true, 
-                price: true, 
+                name: true,
+                price: true,
                 storeId: true,
                 category: true
             }

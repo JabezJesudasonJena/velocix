@@ -12,10 +12,10 @@ productRouter.post(
     createProductController
 )
 
+productRouter.get("/sorted",getSortedProduct);
+
 productRouter.get("/:id",getProduct)
 
 productRouter.get("/", getfilterproduct)
-
-productRouter.get("/sorted",getSortedProduct);
     
 export default productRouter;

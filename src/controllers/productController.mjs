@@ -13,6 +13,7 @@ export const createProductController = async (req , res ) => {
 export const getProduct  = async (req , res) => {
     try{
         const prismaProduct = await getSingleProductService(req.params.id);
+        // console.log(req.params.id)
         res.status(200).json(prismaProduct);
     }catch(err){
         res.status(400).json({err: err.message})
