@@ -28,3 +28,20 @@ export const createOrderService = async (userId,data) => {
         }
     }
 }
+
+
+export const placeOrderService = async (userId, data) => {
+    try {
+        const checkQuantity = await prisma.product.findFirst({
+            where : {
+                id: data.productId
+            },
+            select:{
+                quantity: true
+            }
+        })
+        
+    }catch (err) {
+        return err
+    }
+}
