@@ -11,7 +11,7 @@ export const createProductService = async (data, user, store) => {
                 storeId: data.storeId,
                 category: data.category,
                 isEdible: data.isEdible,
-                quantity: data.quantity
+                stock: data.stock
             }
         })
         return prismaProduct

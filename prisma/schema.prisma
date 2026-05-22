@@ -35,9 +35,9 @@ model Product {
     storeId  Int
     category String
     isEdible Boolean @default(false)
-    quantity Int     @default(1)
+    stock    Int     @default(1)
     store    Store   @relation(fields: [storeId], references: [id])
-    items    Item[]
+    items    OrderItem[]
 }
 
 model Order {
@@ -45,16 +45,18 @@ model Order {
     userId    Int
     total     Float
     storeId   Int
-    createdAt DateTime @default(now())
     status    String   @default("pending")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
     // Relations
     user  User   @relation(fields: [userId], references: [id])
     store Store  @relation(fields: [storeId], references: [id])
-    items Item[]
+    items OrderItem[]
+
 }
 
-model Item {
+model OrderItem {
     id        Int @id @default(autoincrement())
     productId Int
     orderId   Int
@@ -65,6 +67,10 @@ model Item {
     order     Order    @relation(fields: [orderId], references: [id])
     createdAt DateTime @default(now())
     product   Product  @relation(fields: [productId], references: [id])
+
+    @@index([orderId])
+    @@index([id])
+    @@index([productId])
 }
 
 model Address {
