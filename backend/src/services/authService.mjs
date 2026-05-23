@@ -1,16 +1,28 @@
 import jwt from "jsonwebtoken";
 import prisma from "../db/prismadb.mjs";
 import bcrypt from "bcrypt";
-import { jwtMiddleware } from "../middlewares/jwtMiddleware.mjs";
 
 export const signUpService = async (user) => {
+    if (!user || typeof user !== "object") {
+        throw new Error("Invalid signup payload");
+    }
+
+    const name = String(user.name ?? "").trim();
+    const email = String(user.email ?? "").trim().toLowerCase();
+    const password = String(user.password ?? "");
+    const role = String(user.role ?? "consumer").trim() || "consumer";
+
+    if (!name || !email || !password) {
+        throw new Error("Name, email, and password are required");
+    }
+
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const prismaUser = await prisma.user.create({
         data:{
-            name: user.name,
-            email : user.email,
+            name,
+            email,
             password : hashedPassword,
-            role : user.role,
+            role,
         }
     })
     return prismaUser;
