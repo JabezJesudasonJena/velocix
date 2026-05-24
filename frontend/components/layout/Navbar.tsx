@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Right: Actions (Login & CTA) */}
         <div className="hidden md:flex items-center gap-4">
           <a 
-            href="/login" 
+            href="/signin" 
             className="font-['Inter'] text-[14px] font-semibold text-[#191c1e] hover:text-[#006b2c] transition-colors px-4 py-2"
           >
             Log in

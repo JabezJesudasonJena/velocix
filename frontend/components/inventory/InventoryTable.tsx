@@ -18,10 +18,25 @@ export default function     InventoryTable() {
     const fetchInventory = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const response = await axios.get(`${baseUrl}/product/`); // Adjust endpoint to match your backend
+        const token = localStorage.getItem('velocix_token'); // Grab the token!
+
+        const response = await axios.get(`${baseUrl}/product/`, {
+          headers: { 'Authorization': `Bearer ${token}` } // Send the token
+        }); 
         
-        // Assuming your backend returns an array of products
-        setProducts(response.data);
+        // THE FIX: Safely extract the array based on common backend formats
+        const data = response.data;
+        if (Array.isArray(data)) {
+          setProducts(data); // Backend returned raw array: [...]
+        } else if (data && Array.isArray(data.products)) {
+          setProducts(data.products); // Backend returned: { products: [...] }
+        } else if (data && Array.isArray(data.data)) {
+          setProducts(data.data); // Backend returned: { data: [...] }
+        } else {
+          setProducts([]); // Fallback if no array is found
+          console.warn("Unexpected backend response format:", data);
+        }
+
       } catch (err) {
         console.error("Failed to fetch inventory:", err);
         setError("Could not load inventory from the server.");
@@ -33,8 +48,11 @@ export default function     InventoryTable() {
     fetchInventory();
   }, []);
 
-  // 3. Filter the products based on search and category
-  const filteredProducts = products.filter(product => {
+  // 3. Bulletproof the filter function just in case
+  const safeProducts = Array.isArray(products) ? products : [];
+  
+  const filteredProducts = safeProducts.filter(product => {
+    // Added optional chaining (?.) to prevent crashes if name or category are missing
     const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === '' || product.category === categoryFilter;
     return matchesSearch && matchesCategory;

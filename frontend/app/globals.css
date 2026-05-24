@@ -1,4 +1,5 @@
 @import "tailwindcss";
+/* Add this line to fetch Geist and Inter */
 @config "../tailwind.config.ts";
 
 @layer utilities {

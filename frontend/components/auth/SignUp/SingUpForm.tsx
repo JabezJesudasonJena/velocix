@@ -315,7 +315,7 @@ export default function SignUpForm() {
             Already have an account?{' '}
             <a
               className="font-medium text-[#006b2c] hover:text-[#00873a] transition-colors underline-offset-4 hover:underline"
-              href="/login"
+              href="/signin"
             >
               Log in instead
             </a>
