@@ -1,4 +1,4 @@
-import { createProductService, getPaginatedProductService, getSingleProductService, getSortedProductService} from "../services/productService.mjs";
+import { createProductService, getAllProductsService, getPaginatedProductService, getSingleProductService, getSortedProductService} from "../services/productService.mjs";
 
 export const createProductController = async (req , res ) => {
     try{
@@ -39,3 +39,11 @@ export const getSortedProduct = async (req , res) => {
     }
 }
 
+export const getAllProducts = async (req, res) => {
+    try{
+        const prismaProducts = await getAllProductsService();
+        res.status(200).json(prismaProducts);
+    }catch(err){
+        return res.status(400).json({err: err.message})
+    }
+}

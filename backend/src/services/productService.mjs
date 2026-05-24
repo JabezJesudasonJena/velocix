@@ -1,5 +1,13 @@
 import prisma from "../db/prismadb.mjs";
 
+export const getAllProductsService = async () => {
+    try{
+        const prismaProducts = await prisma.product.findMany({});
+        return prismaProducts;
+    }catch(err){
+        return err;
+    }
+}
 
 export const createProductService = async (data, user, store) => {
     if (store.ownerId != user.id) throw new Error("User does not own the store");

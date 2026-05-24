@@ -1,7 +1,7 @@
 import prisma from "../db/prismadb.mjs"
 
 export const createStore = async (data, tokenData) => {
-    if(tokenData.role != 'storeadmin') throw new Error("U must be store admin to create store")
+    if(tokenData.role != 'store-admin') throw new Error("U must be store admin to create store")
     const prismaStore = await prisma.store.create({
         data : {
             name: data.name, 
