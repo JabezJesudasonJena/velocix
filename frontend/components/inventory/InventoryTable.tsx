@@ -18,7 +18,7 @@ export default function     InventoryTable() {
     const fetchInventory = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-        const response = await axios.get(`${baseUrl}/products`); // Adjust endpoint to match your backend
+        const response = await axios.get(`${baseUrl}/product/`); // Adjust endpoint to match your backend
         
         // Assuming your backend returns an array of products
         setProducts(response.data);

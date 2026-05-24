@@ -20,3 +20,16 @@ export const getAllStoresService = async () => {
         return err
     }
 }
+
+export const storeExistService = async (data) => {
+    try{
+        const prismaStore = await prisma.store.findFirst({
+            where:{
+                ownerId: data
+            }
+        })
+        return prismaStore
+    }catch(err){
+        return err || "Store Exist check Error"
+    }
+}
