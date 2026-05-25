@@ -1,35 +1,39 @@
 import prisma from "../db/prismadb.mjs"
+import AppError from "../utils/appError.mjs";
 
-export const createStore = async (data, tokenData) => {
-    if(tokenData.role != 'store-admin') throw new Error("U must be store admin to create store")
-    const prismaStore = await prisma.store.create({
-        data : {
-            name: data.name, 
-            ownerId: tokenData.id
+class StoreService{
+    static async AddStore(data, user){
+        if(user.role != "store-admin"){
+            throw new Error("Not a store-admin");
         }
-    })
-    if (!prismaStore) throw new Error("Store does not exist")
-    return prismaStore;
-}
-
-export const getAllStoresService = async () => {
-    try { 
-        const allPrismaStores = await prisma.store.findMany();
-        return allPrismaStores
-    }catch(err){
-        return err
+            return await prisma.store.create({
+                data:{
+                    name: data.name,
+                    ownerId:user.id,
+                    //Location
+                    latitude: data.lat || data.latitude,
+                    longitude: data.lng || data.longitude   
+                }
+            })
     }
-}
 
-export const storeExistService = async (data) => {
-    try{
-        const prismaStore = await prisma.store.findFirst({
+
+    static async getAllStores(){
+        const stores = await prisma.store.findMany({});
+        if(!stores || stores.length ==0){
+            throw new AppError("No Store There", 401 );
+        }
+        return stores;
+    }
+
+    static async getSingleStore(storeId){
+        return await prisma.store.findFirst({
             where:{
-                ownerId: data
+                id: storeId
             }
-        })
-        return prismaStore
-    }catch(err){
-        return err || "Store Exist check Error"
+        });
     }
+
 }
+
+export default StoreService;

@@ -1,76 +1,70 @@
 import prisma from "../db/prismadb.mjs";
+import AppError from "../utils/appError.mjs";
 
-export const getAllProductsService = async () => {
-    try{
-        const prismaProducts = await prisma.product.findMany({});
-        return prismaProducts;
-    }catch(err){
-        return err;
+class ProductService{
+    static async getAllProducts(){
+        const products =  await prisma.product.findMany({});
+        if(products.length < 1){
+            throw new AppError("No Products", 404)
+        }
+        return products;
+    }
+
+    static async addProduct(data){
+        if (store.ownerId != user.id) throw new Error("User does not own the store");
+        try{
+            return await prisma.product.create({
+                data : {
+                    name: data.name,
+                    price: data.price,
+                    storeId: data.storeId,
+                    category: data.category,
+                    isEdible: data.isEdible,
+                    stock: data.stock
+                }
+            });
+        }catch(err){
+            return err;
+        }
+    }
+
+    static async getSingleProduct(productId){
+        try{
+            return await prisma.product.findFirst({
+                where:{
+                    id: Number(productId)
+                }
+            });
+        }catch(err){
+            return err;
+        }
+    }
+
+    static async getPaginatedProducts(page){
+        try{
+            return prisma.product.findMany({
+                skip:page.skip,
+                take:page.take
+            })
+        }catch(err){
+            return err;
+        }
+    }
+
+    static async getSortedProducts(){
+        try{
+            return await prisma.product.findMany({
+                orderB:{
+                    name: "asc"
+                },
+                select:{
+                    id:true, name: true, price: true, storeId: true, category: true
+                }
+            })
+        }catch(err){
+            return err;
+        }
     }
 }
 
-export const createProductService = async (data, user, store) => {
-    if (store.ownerId != user.id) throw new Error("User does not own the store");
-    try{
-        const prismaProduct = await prisma.product.create({
-            data : {
-                name: data.name,
-                price: data.price,
-                storeId: data.storeId,
-                category: data.category,
-                isEdible: data.isEdible,
-                stock: data.stock
-            }
-        })
-        return prismaProduct
-    }catch(err){
-        return {err : err}
-    }
-    
-}
-
-export const getSingleProductService = async (data) => {
-    try {
-        console.log(data)
-        const prismaProduct = await prisma.product.findUnique({
-            where : {
-                id: Number(data)
-            },
-        })
-        return prismaProduct
-    }catch(err){
-        return err
-    }
-}
-
-export const getPaginatedProductService = async (data) => {
-    try {
-        const filteredPrismaProducts = await prisma.product.findMany({
-            skip:+data.skip,
-            take:+data.take
-        })
-        return filteredPrismaProducts
-    }catch(err){
-        return err
-    }
-}
-
-export const getSortedProductService = async () => {
-    try {
-        const prismaOrderdProducts = await prisma.product.findMany({
-            orderBy: {
-                name: "asc"
-            },
-            select: {
-                id : true, 
-                name: true,
-                price: true,
-                storeId: true,
-                category: true
-            }
-        })
-        return prismaOrderdProducts;
-    }catch(err){
-        return err
-    }
-}
+export default ProductService;

@@ -1,11 +1,14 @@
-import { createOrderService } from "../services/orderService.mjs";
+import OrderService from "../services/orderService.mjs";
+import { catchAsync } from "../utils/catchAsync.js";
 
-export const createOrderController = async (req , res) => {
-    try{
-        const prismaOrder = await createOrderService(req.user.id, req.body);
-        return res.status(200).json({Order: prismaOrder})
-    }catch(err){    
-        console.log(err.message)
-        return res.status(400).json({errorMessage: err.message})
-    }
+class OrderController {
+    static placeOrder = catchAsync(async(req, res) =>{
+        const order = await OrderService.placeOrder(req.user.id, data, req.body.items);
+        return res.status(200).json({
+            success: true,
+            data: order
+        });
+    })
 }
+
+export default OrderController;

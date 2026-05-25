@@ -66,8 +66,7 @@ export default function SignUpForm() {
     } finally {
       setIsLoading(false);
     }
-  };
-
+  };  
   return (
     <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 sm:p-12 lg:p-24 bg-[#f7f9fb] relative overflow-y-auto">
       

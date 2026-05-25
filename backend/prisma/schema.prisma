@@ -24,6 +24,11 @@ model Store {
     name     String
     ownerId  Int
     owner    User      @relation(fields: [ownerId], references: [id])
+    
+    // Locations
+    latitude    Float?    
+    longitude   Float?
+    
     products Product[]
     order    Order[]
 }

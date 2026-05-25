@@ -1,13 +1,12 @@
 import { Router } from "express";
-import { sessionMiddleware} from "../middlewares/jwtMiddleware.mjs";
-import PlaceOrderController from "../controllers/placeOrderController.mjs";
+import OrderController from "../controllers/orderController.mjs";
 
 
 const orderRouter = Router();
 
 orderRouter.post(
     "/create",
-    PlaceOrderController.placeOrder
+    OrderController.placeOrder
 )
 
 export default orderRouter;
