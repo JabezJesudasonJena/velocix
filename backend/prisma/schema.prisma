@@ -1,0 +1,89 @@
+// Get free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id        Int       @id @default(autoincrement())
+    name      String
+    email     String    @unique
+    password  String
+    role      String    @default("consumer")
+    stores    Store[]
+    orders    Order[]
+    addresses Address[]
+}
+
+model Store {
+    id       Int       @id @default(autoincrement())
+    name     String
+    ownerId  Int
+    owner    User      @relation(fields: [ownerId], references: [id])
+    
+    // Locations
+    latitude    Float?    
+    longitude   Float?
+    
+    products Product[]
+    order    Order[]
+}
+
+model Product {
+    id       Int     @id @default(autoincrement())
+    name     String
+    price    Float
+    storeId  Int
+    category String
+    isEdible Boolean @default(false)
+    stock    Int     @default(1)
+    store    Store   @relation(fields: [storeId], references: [id])
+    items    OrderItem[]
+}
+
+model Order {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    total     Float
+    storeId   Int
+    status    String   @default("pending")
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Relations
+    user  User   @relation(fields: [userId], references: [id])
+    store Store  @relation(fields: [storeId], references: [id])
+    items OrderItem[]
+
+}
+
+model OrderItem {
+    id        Int @id @default(autoincrement())
+    productId Int
+    orderId   Int
+
+    quantity Int
+    price    Float
+
+    order     Order    @relation(fields: [orderId], references: [id])
+    createdAt DateTime @default(now())
+    product   Product  @relation(fields: [productId], references: [id])
+
+    @@index([orderId])
+    @@index([id])
+    @@index([productId])
+}
+
+model Address {
+    id      Int     @id @default(autoincrement())
+    city    String?
+    pincode String?
+    userId  Int
+    village String?
+    // Relations
+    user    User    @relation(fields: [userId], references: [id])
+}
