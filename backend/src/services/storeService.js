@@ -24,19 +24,9 @@ class StoreService{
     }
 
 
-    static async getAllStores(query = {}){
-        const page = parsePositiveInt(query.page, 1);
-        const limit = parsePositiveInt(query.limit, 20);
-        const skip = (page - 1) * limit;
-
-        // Page store results so the endpoint stays responsive on large tables.
-        const stores = await prisma.store.findMany({
-            skip,
-            take: limit,
-            orderBy: {
-                id: "asc"
-            }
-        });
+    static async getAllStores(){
+        const stores = await prisma.store.findMany({});
+        console.log(stores);
         if(!stores || stores.length ==0){
             throw new AppError("No Store There", 401 );
         }
@@ -64,6 +54,28 @@ class StoreService{
         }
 
         return store;
+    }
+
+    static async updateStoreName(storeId, newName, userId){
+        const store = await prisma.store.findFirst({
+            where: {
+                id: Number(storeId)
+            }
+        });
+        if (!store) {
+            throw new AppError("Store is not there in database", 404);
+        }
+        if (store.ownerId !== Number(userId)) {
+            throw new AppError("User does not own the store", 403);
+        }
+        return await prisma.store.update({
+            where: {
+                id: Number(storeId)
+            },
+            data: {
+                name: newName
+            }
+        });
     }
 
 }

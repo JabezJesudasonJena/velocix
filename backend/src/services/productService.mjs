@@ -30,11 +30,9 @@ class ProductService{
         if (!store) {
             throw new AppError("Store is required to create a product", 400);
         }
-
         if (store.ownerId !== user.id) {
             throw new AppError("User does not own the store", 403);
         }
-
         // Persist the product against the validated store and owner.
         return await prisma.product.create({
             data : {
@@ -79,6 +77,40 @@ class ProductService{
             select:{
                 id:true, name: true, price: true, storeId: true, category: true
             }
+        })
+    }
+
+    static async updateProduct(productId, userId ,data){
+        const store = await prisma.store.findFirst({
+            where:{
+                ownerId: userId
+            }
+        })
+        if(!store) throw new AppError("There is no store owned by user", 400) 
+        const product = await prisma.product.findFirst({
+            where:{
+                id: Number(productId)
+            }
+        });
+        if(!product) throw new AppError("No Product Found !", 404)
+        if(product.storeId != store.id) throw new AppError("The Product is not from the store the user owns", 404);
+
+        return await prisma.product.update({
+            where:{
+                id: Number(productId)
+            },
+            data: data
+        })
+
+    }
+
+
+    static async getFewProducts(data) {
+        const {skip, take, limit} = data;
+        return await prisma.product.findMany({
+            skip: skip || 10,
+            take: take || 100,
+            limit: 100
         })
     }
 }

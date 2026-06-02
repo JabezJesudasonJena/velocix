@@ -10,6 +10,12 @@ class AuthService{
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
+        const isEmailAlreadyPresent = await prisma.user.findFirst({
+            where: {
+                email: user.email
+            }
+        })
+        if(isEmailAlreadyPresent) throw new AppError("Email already exists", 400);
         const prismaUser = await prisma.user.create({
             data:{
                 name: user.name,

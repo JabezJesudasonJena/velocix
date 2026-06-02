@@ -22,3 +22,12 @@ export const protect = catchAsync(async(req, res, next)=> {
     
     next();
 })
+
+export const protectProduct = catchAsync(async(req, res, next) => {
+    // This middleware is used to protect product routes and check if the user is the owner of the store.
+    // The store is attached to the request in the checkStoreValidity middleware, so we can access it here.\ 
+    if(req.store.ownerId !== req.user.id){
+        throw new AppError("You do not own this store", 403);
+    }
+    next();
+})

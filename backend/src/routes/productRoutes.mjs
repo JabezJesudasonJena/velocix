@@ -1,22 +1,27 @@
 import { Router } from "express";
 import { checkStoreValidity } from "../middlewares/storeExistMiddle.mjs";
-import { jwtMiddleware} from "../middlewares/jwtMiddleware.mjs";
+import { protect } from "../middlewares/protect.mjs";
 import ProductController from "../controllers/productController.mjs";
+
 
 const productRouter = Router();
 
 productRouter.post(
     "/create",
-    jwtMiddleware,
+    protect,
     checkStoreValidity,
     ProductController.addProduct
 )
 
 productRouter.get("/sorted",ProductController.getSortedProducts);
 
-//productRouter.get("/:id",getProduct)
-
 productRouter.get("/", ProductController.getAllProducts)
+productRouter.get("/paginated", ProductController.getPaginatedProduct)
+
+
+productRouter.put("/update/:id", protect, ProductController.updateProduct)
+
+productRouter.get("/:id",ProductController.getProduct)
 
 
 

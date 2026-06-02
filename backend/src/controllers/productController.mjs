@@ -46,6 +46,14 @@ class ProductController{
         })
     })
 
+    static updateProduct = catchAsync(async(req, res) => {
+        const product = await ProductService.updateProduct(req.params.id, req.user.id, req.body);
+        return res.status(200).json({
+            success: true,
+            data: product
+        });
+    })
+
 }
 
 export default ProductController;

@@ -4,16 +4,15 @@ import { catchAsync } from "../utils/catchAsync.js";
 class StoreController {
     static AddStore = catchAsync(async (req,res) => {
         const store = await StoreService.AddStore(req.body, req.user);
-        return res.status(200).json({
+        return res.status(201).json({
             success: true,
             data: store
         })
     })
 
     static getAllStores = catchAsync(async(req, res) => {
-        // Use pagination so the stores endpoint stays fast as data grows.
-        const stores = await StoreService.getAllStores(req.query);
-        return res.status(200).json({
+        const stores = await StoreService.getAllStores();
+        return res.status(200). json({
             success: true,
             data: stores
         })
@@ -35,6 +34,16 @@ class StoreController {
             data: store
         });
     })
+
+    static updateStoreName = catchAsync(async (req, res) => {
+        const { storeId, newName } = req.body;
+        const updatedStore = await StoreService.updateStoreName(req.params.id || storeId, newName, req.user.id);
+        return res.status(200).json({
+            success: true,
+            data: updatedStore
+        });
+    })
 }
+
 
 export default StoreController;
