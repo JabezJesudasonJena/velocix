@@ -28,19 +28,20 @@ export default function CreateProductForm() {
     const fetchStore = async () => {
       try {
         const token = localStorage.getItem('velocix_token');
-        console.log(token)
         const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
         
-        // Hitting your specific endpoint
+        // Read the current user's store so the product form can attach products correctly.
         const response = await axios.get(`${baseUrl}/store/check`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
-        if (response.data && response.data.id) {
+
+        const store = response.data?.data ?? response.data;
+
+        if (store && store.id) {
           // Save the whole store object so we can display the name
           setStoreDetails({
-            id: response.data.id,
-            name: response.data.name 
+            id: store.id,
+            name: store.name 
           });
         }
       } catch (error) {
@@ -142,7 +143,7 @@ export default function CreateProductForm() {
               <span className="material-symbols-outlined">storefront</span>
             </div>
             <div>
-              <p className="text-[11px] font-semibold tracking-[0.05em] uppercase text-[#456648] mb-0.5">
+              <p className="text-[11px] font-semibold tracking-wider uppercase text-[#456648] mb-0.5">
                 Adding to Store
               </p>
               <p className="text-[15px] font-medium text-[#00501f]">
@@ -163,7 +164,7 @@ export default function CreateProductForm() {
             
             {/* Product Name */}
             <div className="md:col-span-2">
-              <label className="block font-['Inter'] text-[12px] leading-[16px] tracking-[0.1em] font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
+              <label className="block font-['Inter'] text-[12px] leading-4 tracking-widest font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
                 Product Name
               </label>
               <input 
@@ -179,7 +180,7 @@ export default function CreateProductForm() {
 
             {/* Category */}
             <div>
-              <label className="block font-['Inter'] text-[12px] leading-[16px] tracking-[0.1em] font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
+              <label className="block font-['Inter'] text-[12px] leading-4 tracking-widest font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
                 Category
               </label>
               <div className="relative">
@@ -205,7 +206,7 @@ export default function CreateProductForm() {
 
             {/* Price */}
             <div>
-              <label className="block font-['Inter'] text-[12px] leading-[16px] tracking-[0.1em] font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
+              <label className="block font-['Inter'] text-[12px] leading-4 tracking-widest font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
                 Price (USD)
               </label>
               <div className="relative">
@@ -228,7 +229,7 @@ export default function CreateProductForm() {
 
             {/* Initial Stock */}
             <div>
-              <label className="block font-['Inter'] text-[12px] leading-[16px] tracking-[0.1em] font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
+              <label className="block font-['Inter'] text-[12px] leading-4 tracking-widest font-semibold uppercase text-[#3e4a3d] mb-2 ml-1">
                 Initial Stock Level
               </label>
               <input 
@@ -253,7 +254,7 @@ export default function CreateProductForm() {
                     type="checkbox" 
                     className="sr-only peer" 
                   />
-                  <div className="w-11 h-6 bg-[#e6e8ea] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00873a]"></div>
+                  <div className="w-11 h-6 bg-[#e6e8ea] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#00873a]"></div>
                 </div>
                 <div>
                   <span className="block font-['Inter'] text-[14px] font-medium text-[#191c1e]">Edible Item</span>

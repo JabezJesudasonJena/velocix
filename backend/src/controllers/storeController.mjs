@@ -11,7 +11,8 @@ class StoreController {
     })
 
     static getAllStores = catchAsync(async(req, res) => {
-        const stores = await StoreService.getAllStores();
+        // Use pagination so the stores endpoint stays fast as data grows.
+        const stores = await StoreService.getAllStores(req.query);
         return res.status(200).json({
             success: true,
             data: stores
@@ -20,6 +21,15 @@ class StoreController {
 
     static getSingleStore = catchAsync(async (req, res) => {
         const store = await StoreService.getSingleStore(req.params.id || req.body.id);
+        return res.status(200).json({
+            success: true,
+            data: store
+        });
+    })
+
+    static getCurrentUserStore = catchAsync(async (req, res) => {
+        // Send back the owner's store so the product form can reuse it.
+        const store = await StoreService.getCurrentUserStore(req.user.id);
         return res.status(200).json({
             success: true,
             data: store

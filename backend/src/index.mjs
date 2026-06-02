@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import router from "./routes/index.mjs";
 dotenv.config();
@@ -16,6 +17,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin: true,
     credentials: true
@@ -31,8 +33,8 @@ app.get("/health",(req, res)=>{
     res.send("Health os Ok!")
 })
 
-app.all('*', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+app.all("/*splat", (req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 

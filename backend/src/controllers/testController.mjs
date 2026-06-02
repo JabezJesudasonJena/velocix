@@ -9,5 +9,8 @@ export const testGetProducts = async (req, res) => {
     console.timeEnd("PrismaQuery"); // This will print the EXACT milliseconds Prisma took
     console.log("2. Sending response to frontend");
     
-    res.json(products);
+    res.json({
+        success: true,
+        data: products
+    });
 }

@@ -5,17 +5,17 @@ import AppError from "../utils/appError.mjs";
 
 class AuthService{
     static async signUp(user){
-        if (!user.naame || !user.email || !user.password) {
+        if (!user.name || !user.email || !user.password) {
             throw new AppError("Name, email, and password are required");
         }
 
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const prismaUser = await prisma.user.create({
             data:{
-                name,
-                email,
+                name: user.name,
+                email: user.email,
                 password : hashedPassword,
-                role,
+                role: user.role,
             }
         })
         return prismaUser;

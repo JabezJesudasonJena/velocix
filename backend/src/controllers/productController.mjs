@@ -5,7 +5,8 @@ import { catchAsync } from "../utils/catchAsync.js";
 class ProductController{
 
     static getAllProducts = catchAsync(async (req, res)=> {
-        const products = await getAllProducts.getAllProducts();
+        // Use query pagination so the endpoint does not return the whole table.
+        const products = await ProductService.getAllProducts(req.query);
         return res.status(200).json({
             success: true,
             data: products
@@ -13,7 +14,8 @@ class ProductController{
     })
 
     static addProduct = catchAsync(async(req, res) => {
-        const product = await ProductService.addProduct(req.body);
+        // Pass the validated store and user so ownership can be checked here.
+        const product = await ProductService.addProduct(req.body, req.user, req.store);
         return res.status(201).json({
             success: true,
             data: product

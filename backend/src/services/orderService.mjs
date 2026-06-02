@@ -3,29 +3,41 @@ import AppError from "../utils/appError.mjs";
 
 class OrderService{
     static async placeOrder(userId, data, items){
-        return await prisma.$transaction(async (tx) => {
-            console.log(items)
-            let totalPrice = 0;
-            // Validate Stock
-            for(const item of items){
-                const product = await tx.product.findUnique({
-                    where : {
-                        id:item.productId
-                    }
-                });
+        if (!data?.storeId) {
+            throw new AppError("Store id is required", 400);
+        }
 
-                if(!product) throw new AppError("Product not found !")
-                
-                if(product.stock < item.quantity){
-                    throw new Error(
-                        `${product.name} is out of stock`
-                    );
+        if (!Array.isArray(items) || items.length === 0) {
+            throw new AppError("Order items are required", 400);
+        }
+
+        return await prisma.$transaction(async (tx) => {
+            let totalPrice = 0;
+
+            // Load every product once so the transaction does not do repeated lookups.
+            const productIds = [...new Set(items.map((item) => item.productId))];
+            const products = await tx.product.findMany({
+                where: {
+                    id: {
+                        in: productIds
+                    }
+                }
+            });
+            const productMap = new Map(products.map((product) => [product.id, product]));
+
+            for (const item of items) {
+                const product = productMap.get(item.productId);
+
+                if (!product) {
+                    throw new AppError("Product not found !", 404);
                 }
 
-                totalPrice += (
-                    product.price * item.quantity
-                )
-            };
+                if (product.stock < item.quantity) {
+                    throw new Error(`${product.name} is out of stock`);
+                }
+
+                totalPrice += product.price * item.quantity;
+            }
             
             // Create Order
             const order = await tx.order.create({
@@ -37,15 +49,9 @@ class OrderService{
                 }
             });
 
-            console.log(items)
             // Update Stock
             for (const item of items ){
-                console.log(item)
-                const product = await tx.product.findUnique({
-                    where: {
-                        id: item.productId
-                        }
-                });
+                const product = productMap.get(item.productId);
                 
                 await tx.orderItem.create({
                     data: {
@@ -82,9 +88,9 @@ class OrderService{
     // GET order
 
     static async getOrder(orderId){
-        return await prisma.findUnique({
+        return await prisma.order.findUnique({
             where:{
-                id: orderId
+                id: Number(orderId)
             },
             include: {
                 items: true
