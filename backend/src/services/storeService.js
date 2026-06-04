@@ -17,8 +17,8 @@ class StoreService{
             data:{
                 name: data.name,
                 ownerId:user.id,
-                latitude: data.lat ?? data.latitude,
-                longitude: data.lng ?? data.longitude   
+                lat: data.lat ?? data.latitude,
+                lng: data.lng ?? data.longitude   
             }
         })
     }
@@ -26,7 +26,6 @@ class StoreService{
 
     static async getAllStores(){
         const stores = await prisma.store.findMany({});
-        console.log(stores);
         if(!stores || stores.length ==0){
             throw new AppError("No Store There", 401 );
         }
@@ -39,6 +38,17 @@ class StoreService{
                 id: Number(storeId)
             }
         });
+    }
+
+    static async getSingleStoreWithProducts(storeId){
+        return await prisma.store.findFirst({
+            where:{
+                id: Number(storeId)
+            },
+            include: {
+                products: true
+            }
+        })
     }
 
     static async getCurrentUserStore(userId){

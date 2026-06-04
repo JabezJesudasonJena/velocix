@@ -1,89 +1,80 @@
-// Get free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
+  provider = "postgresql"
 }
 
 model User {
-    id        Int       @id @default(autoincrement())
-    name      String
-    email     String    @unique
-    password  String
-    role      String    @default("consumer")
-    stores    Store[]
-    orders    Order[]
-    addresses Address[]
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      String    @default("consumer")
+  addresses Address[]
+  orders    Order[]
+  stores    Store[]
 }
 
 model Store {
-    id       Int       @id @default(autoincrement())
-    name     String
-    ownerId  Int
-    owner    User      @relation(fields: [ownerId], references: [id])
-    
-    // Locations
-    latitude    Float?    
-    longitude   Float?
-    
-    products Product[]
-    order    Order[]
+  id      Int     @id @default(autoincrement())
+  name    String
+  ownerId Int
+  desc    String?
+  lat     Float   @default(13.0827)
+  lng     Float   @default(80.2707)
+
+  order    Order[]
+  products Product[]
+  owner    User      @relation(fields: [ownerId], references: [id])
 }
 
 model Product {
-    id       Int     @id @default(autoincrement())
-    name     String
-    price    Float
-    storeId  Int
-    category String
-    isEdible Boolean @default(false)
-    stock    Int     @default(1)
-    store    Store   @relation(fields: [storeId], references: [id])
-    items    OrderItem[]
+  id       Int         @id @default(autoincrement())
+  name     String
+  price    Float
+  storeId  Int
+  category String
+  isEdible Boolean     @default(false)
+  stock    Int         @default(1)
+  items    OrderItem[]
+  store    Store       @relation(fields: [storeId], references: [id])
 }
 
 model Order {
-    id        Int      @id @default(autoincrement())
-    userId    Int
-    total     Float
-    storeId   Int
-    status    String   @default("pending")
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    // Relations
-    user  User   @relation(fields: [userId], references: [id])
-    store Store  @relation(fields: [storeId], references: [id])
-    items OrderItem[]
-
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  total     Float
+  storeId   Int
+  createdAt DateTime    @default(now())
+  status    String      @default("pending")
+  updatedAt DateTime    @updatedAt
+  store     Store       @relation(fields: [storeId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
 }
 
 model OrderItem {
-    id        Int @id @default(autoincrement())
-    productId Int
-    orderId   Int
+  id        Int      @id @default(autoincrement())
+  productId Int
+  orderId   Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
 
-    quantity Int
-    price    Float
-
-    order     Order    @relation(fields: [orderId], references: [id])
-    createdAt DateTime @default(now())
-    product   Product  @relation(fields: [productId], references: [id])
-
-    @@index([orderId])
-    @@index([id])
-    @@index([productId])
+  @@index([orderId])
+  @@index([id])
+  @@index([productId])
 }
 
 model Address {
-    id      Int     @id @default(autoincrement())
-    city    String?
-    pincode String?
-    userId  Int
-    village String?
-    // Relations
-    user    User    @relation(fields: [userId], references: [id])
+  id      Int     @id @default(autoincrement())
+  city    String?
+  pincode String?
+  userId  Int
+  village String?
+  user    User    @relation(fields: [userId], references: [id])
 }

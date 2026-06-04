@@ -38,7 +38,25 @@ class AuthService{
         
         if(!isPasswordValid) throw new AppError("Unauthorized Access", 404);
         const token = jwt.sign({id: prismaUser.id, role : prismaUser.role}, process.env.JWT_SECRET, {expiresIn : "7d"});
-        return token;
+        return {
+            token: token,
+            userData: {
+                name: prismaUser.name,
+                role: prismaUser.role
+            }
+        };
+    }
+
+    static async profile(userId){
+        return await prisma.user.findFirst({
+            where: {
+                id: userId
+            },
+            // This ensures that password is not sent to the frontend
+            include:{
+                password: false, stores: true
+            }
+        })
     }
 }
 

@@ -26,6 +26,14 @@ class StoreController {
         });
     })
 
+    static getStoreWithProducts = catchAsync(async (req, res) =>{
+        const storeWithProducts = await StoreService.getSingleStoreWithProducts(req.params.id || req.body.storeId);
+        return res.status(200).json({
+            success: true,
+            data: storeWithProducts
+        })
+    })
+
     static getCurrentUserStore = catchAsync(async (req, res) => {
         // Send back the owner's store so the product form can reuse it.
         const store = await StoreService.getCurrentUserStore(req.user.id);

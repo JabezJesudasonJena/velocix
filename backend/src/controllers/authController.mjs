@@ -24,8 +24,18 @@ class AuthController{
         //Sending jwt as a response
         return res.status(200).json({
             success: true,
-            token: token
+            token: token.token,
+            data: token.userData
         });
+    })
+
+
+    static profile = catchAsync(async (req, res) => {
+        const user = await AuthService.profile(req.user.id);
+        return res.status(200).json({
+            success: true,
+            data: user
+        })
     })
 }
 

@@ -12,10 +12,15 @@ storeRouter.post("/create",protect,StoreController.AddStore);
 // Get the current user's store, auth required.
 storeRouter.get("/check", protect, StoreController.getCurrentUserStore);
 
-//Get a Singe store by id, no auth required.
-storeRouter.get("/:id", protect, StoreController.getSingleStore);
+//This will retrun a store details with products  
+storeRouter.get("/storeproducts/:id", StoreController.getStoreWithProducts)
 
 // Update store name, auth required.
 storeRouter.put("/update/:id", protect, StoreController.updateStoreName);
+
+// For now it will return the single store detials 
+storeRouter.get("/:id", StoreController.getSingleStore);
+
+
 
 export default storeRouter;
