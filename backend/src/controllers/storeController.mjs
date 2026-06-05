@@ -55,6 +55,7 @@ class StoreController {
     // Nearest Stores
     static getNearestStores = catchAsync(async (req, res) => {
         const nearestStores = await StoreService.getNearestStore(req.query);
+        // console.log(nearestStores)
         return res.status(200).json({
             success: true,
             data: nearestStores

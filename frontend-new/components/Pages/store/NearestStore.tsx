@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { MapPin, Navigation, Store as StoreIcon } from 'lucide-react';
+import { MapPin, Navigation, Radius, Store as StoreIcon } from 'lucide-react';
+import axios from 'axios';
 
 // --- Premium Map Icons ---
 const userPin = new L.Icon({
@@ -74,12 +75,22 @@ export default function NearestStores() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`/api/store/neareststores?lat=${lat}&lng=${lng}&radius=${DEFAULT_RADIUS}`);
-      if (!response.ok) throw new Error("Failed to fetch stores.");
-      const data = await response.json();
-      setStores(data.stores); 
-    } catch (err: any) {
-      setError(err.message);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URI}/store/neareststore`,
+        {
+            params:{
+                lat,
+                lng,
+                radius: DEFAULT_RADIUS
+            }
+        }
+      );
+      setStores(response.data.data); 
+    } catch (err) {
+      setError(
+        axios.isAxiosError(err)
+        ? err.response?.data?.message || err.message
+        : "Something went wrong"
+      );
     } finally {
       setLoading(false);
     }

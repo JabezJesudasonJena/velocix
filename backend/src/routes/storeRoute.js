@@ -19,7 +19,7 @@ storeRouter.get("/storeproducts/:id", StoreController.getStoreWithProducts)
 storeRouter.put("/update/:id", protect, StoreController.updateStoreName);
 
 // Gets Nearest stores
-storeRouter.get("/neareststores", StoreController.getNearestStores)
+storeRouter.get("/neareststore", StoreController.getNearestStores)
 
 // For now it will return the single store detials 
 storeRouter.get("/:id", StoreController.getSingleStore);

@@ -26,6 +26,8 @@ export default function CreateStoreForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showToast, setShowToast] = useState(false);
+  // Location
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -62,6 +64,33 @@ export default function CreateStoreForm() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleAutoDetect = () => {
+    setIsDetectingLocation(true);
+    setError('');
+
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by your browser.');
+      setIsDetectingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData(prev => ({
+          ...prev,
+          lat: position.coords.latitude.toString(),
+          lng: position.coords.longitude.toString()
+        }));
+        setIsDetectingLocation(false);
+      },
+      (err) => {
+        setError('Location access denied or unavailable. Please enter manually.');
+        setIsDetectingLocation(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
   };
 
   return (
@@ -131,11 +160,13 @@ export default function CreateStoreForm() {
             </div>
 
             {/* Bottom Row: Coordinates (Kept smaller for visual hierarchy) */}
-            <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
+            <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 relative overflow-hidden">
               <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 Geographical Coordinates
               </h3>
+              
+              {/* Manual Input Fields Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide" htmlFor="lat">Latitude</label>
@@ -164,6 +195,42 @@ export default function CreateStoreForm() {
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-sm font-medium"
                     placeholder="e.g. 80.2707"
                   />
+                </div>
+              </div>
+
+              {/* Auto-Detect Section BELOW the inputs */}
+              <div className="mt-5 pt-5 border-t border-gray-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <span className="text-xs font-semibold text-gray-500">
+                  Are you currently at the store's location?
+                </span>
+                
+                <div className="relative group w-full sm:w-auto">
+                  {/* Subtle animated glow for the "alive" feel */}
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-300"></div>
+                  
+                  <button
+                    type="button"
+                    onClick={handleAutoDetect}
+                    disabled={isDetectingLocation}
+                    className="relative w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/50 rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                  >
+                    {isDetectingLocation ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Locating Device...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-4 h-4 text-emerald-600 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                        </svg>
+                        Auto-fill Current Location
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>

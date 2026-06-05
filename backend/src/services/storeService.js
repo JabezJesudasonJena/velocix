@@ -82,7 +82,7 @@ class StoreService{
         /*  
             Nearest Store caalculation:
                 DistanceSphere checks the nearest location based on the req.query
-                
+
         */
         
         const nearestStores = await prisma.$queryRaw`
@@ -90,7 +90,7 @@ class StoreService{
                 id, 
                 name,
                 "ownerId",
-                desc,
+                "desc",
                 ST_Y(location::geometry) AS lat,
                 ST_X(location::geometry) AS lng,
                 ST_DistanceSphere(location, ST_MakePoint(${lng}, ${lat})) as distance_meters
