@@ -70,6 +70,39 @@ class StoreService{
         return store[0];
     }
 
+    static async getNearestStore(data){
+        const lat = parseFloat(data.lat);
+        const lng = parseFloat(data.lng);
+        const radiusInMeters = parseInt(data.radius,10) || 5000;
+
+        if(isNaN(lat) || isNaN(lng)){
+            throw new AppError("Latitude and Longitude are not valid", 400);
+        }
+
+        /*  
+            Nearest Store caalculation:
+                DistanceSphere checks the nearest location based on the req.query
+                
+        */
+        
+        const nearestStores = await prisma.$queryRaw`
+            SELECT 
+                id, 
+                name,
+                "ownerId",
+                desc,
+                ST_Y(location::geometry) AS lat,
+                ST_X(location::geometry) AS lng,
+                ST_DistanceSphere(location, ST_MakePoint(${lng}, ${lat})) as distance_meters
+            FROM "Store"
+            WHERE ST_DistanceSphere(location, ST_MakePoint(${lng}, ${lat})) <= ${radiusInMeters}
+            ORDER BY distance_meters ASC;
+        `;
+
+        return nearestStores;
+
+    }
+
     static async getCurrentUserStore(userId){
         // Return the store owned by the signed-in user for frontend setup flows.
         const store = await prisma.store.findFirst({

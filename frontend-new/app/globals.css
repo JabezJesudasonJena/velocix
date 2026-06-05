@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import "leaflet/dist/leaflet.css";
+
 /* 1. New Tailwind v4 Import Directive */
 @import "tailwindcss";
 
@@ -12,6 +15,11 @@
     /* This will now work properly in v4! */
     @apply text-gray-900 bg-gray-50;
     
+    /* Font */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    
+    background-color: #f3f4f6;
+
     /* Critical for premium fonts: Makes them render sharply */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -42,4 +50,10 @@
   *:focus-visible {
     @apply outline-none ring-2 ring-emerald-500 ring-offset-1;
   }
+}
+
+/* Fix for Leaflet map z-index overlaps with Tailwind */
+.leaflet-container {
+  z-index: 10;
+  border-radius: 0.75rem;
 }

@@ -18,9 +18,10 @@ storeRouter.get("/storeproducts/:id", StoreController.getStoreWithProducts)
 // Update store name, auth required.
 storeRouter.put("/update/:id", protect, StoreController.updateStoreName);
 
+// Gets Nearest stores
+storeRouter.get("/neareststores", StoreController.getNearestStores)
+
 // For now it will return the single store detials 
 storeRouter.get("/:id", StoreController.getSingleStore);
-
-
 
 export default storeRouter;
