@@ -11,16 +11,26 @@ class StoreService{
         if(user.role != "store-admin"){
             throw new AppError("Not a store-admin", 403);
         }
-
-        // Map the incoming coordinates to the Store columns the schema expects.
-        return await prisma.store.create({
+        
+        /* Traditional way to create store 
+        const store =  await prisma.store.create({
             data:{
                 name: data.name,
                 ownerId:user.id,
                 lat: data.lat ?? data.latitude,
                 lng: data.lng ?? data.longitude   
             }
-        })
+         })
+        */
+        return await prisma.$executeRaw`
+            INSERT INTO "Store" ("name","ownerId","desc","location")
+            VALUES(
+                ${data.name},
+                ${user.id},
+                ${data.desc},
+                ST_SetSRID(ST_MakePoint(${data.lng}, ${data.lat}), 4326)
+            )
+        `
     }
 
 
@@ -33,22 +43,31 @@ class StoreService{
     }
 
     static async getSingleStore(storeId){
-        return await prisma.store.findFirst({
+        const store= await prisma.store.findFirst({
             where:{
                 id: Number(storeId)
             }
         });
+        console.log(store);
+        return store;
     }
 
     static async getSingleStoreWithProducts(storeId){
-        return await prisma.store.findFirst({
-            where:{
-                id: Number(storeId)
-            },
-            include: {
-                products: true
-            }
-        })
+        const store = await prisma.$queryRaw`
+            SELECT 
+                s.id,
+                s.name,
+                s."ownerId",
+                s.desc,
+                ST_Y(s.location::geometry) AS lat,
+                ST_X(s.location::geometry) AS lng,
+                COALESCE(json_agg(p) FILTER (WHERE p.id IS NOT NULL), '[]') AS products
+            FROM "Store" s
+            LEFT JOIN "Product" p ON p."storeId" = s.id
+            WHERE s.id = ${storeId}
+            GROUP BY s.id;
+        `;
+        return store[0];
     }
 
     static async getCurrentUserStore(userId){
