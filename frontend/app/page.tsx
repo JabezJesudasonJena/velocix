@@ -1,4 +1,3 @@
-import Header from "@/components/layout/Header";
 import ProductGrid from "@/components/Product/ProductGrid";
 
 export default function page(){

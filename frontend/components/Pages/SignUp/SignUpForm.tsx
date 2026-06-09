@@ -51,23 +51,14 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className={`flex min-h-screen bg-gray-50 text-gray-900 ${jakarta.className}`}>
+    <div className={`min-h-screen bg-[#fafafa] text-gray-900 ${jakarta.className} flex`}>
       
-      {/* Left Column - Form Section */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 bg-white relative z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-        
-        {/* Mobile/Tablet Logo */}
-        <div className="absolute top-8 left-8 lg:hidden flex items-center gap-2">
-          <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-          <span className="text-xl font-extrabold tracking-tight text-gray-900">VELOCIX</span>
-        </div>
-
-        <div className="w-full max-w-sm mx-auto mt-12 lg:mt-0">
-          <div className="mb-8 text-center lg:text-left">
-            <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">Register</h2>
-            <p className="text-gray-500 mt-2 text-sm font-medium">Create a new account to access the platform.</p>
+      {/* Form Section - Anchored to the left and widened */}
+      <div className="w-full lg:w-3/5 xl:w-1/2 flex flex-col justify-center px-8 sm:px-16 md:px-24 xl:px-32 bg-white shadow-[8px_0_40px_rgba(0,0,0,0.02)] relative z-10 min-h-screen">
+        {/* Maximized Form Container */}
+        <div className="w-full max-w-lg mt-20 lg:mt-0">
+          <div className="mb-10 text-left">
+            <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Signup into Velocix</h2>
           </div>
 
           {error && (
@@ -76,10 +67,10 @@ export default function SignUpForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Full Name */}
-            <div className="space-y-1.5">
-              <label className="block text-sm font-bold text-gray-700" htmlFor="name">Full Name</label>
+            <div className="space-y-2">
+              <label className="block text-sm font-bold text-gray-700" htmlFor="name">Name</label>
               <input
                 id="name"
                 name="name"
@@ -87,13 +78,13 @@ export default function SignUpForm() {
                 required
                 value={formData.name}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all sm:text-sm font-medium"
-                placeholder="John Doe"
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-base font-medium"
+                placeholder="velocix user"
               />
             </div>
 
             {/* Email Address */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label className="block text-sm font-bold text-gray-700" htmlFor="email">Email Address</label>
               <input
                 id="email"
@@ -102,13 +93,13 @@ export default function SignUpForm() {
                 required
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all sm:text-sm font-medium"
-                placeholder="name@example.com"
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-base font-medium"
+                placeholder="velocix@velocix.com"
               />
             </div>
 
             {/* Password */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <label className="block text-sm font-bold text-gray-700" htmlFor="password">Password</label>
               <input
                 id="password"
@@ -117,28 +108,28 @@ export default function SignUpForm() {
                 required
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all sm:text-sm font-medium"
+                className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-base font-medium"
                 placeholder="••••••••"
               />
             </div>
 
             {/* Select Role */}
-            <div className="space-y-1.5 pb-2">
-              <label className="block text-sm font-bold text-gray-700" htmlFor="role">Select Role</label>
+            <div className="space-y-2 pb-4">
+              <label className="block text-sm font-bold text-gray-700" htmlFor="role">Account Type</label>
               <div className="relative">
                 <select
                   id="role"
                   name="role"
                   value={formData.role}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 appearance-none focus:bg-white focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all sm:text-sm font-medium cursor-pointer"
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 appearance-none focus:bg-white focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-base font-medium cursor-pointer"
                 >
                   <option value="consumer">Consumer</option>
                   <option value="store-admin">Store Admin</option>
                   <option value="admin">System Admin</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </div>
@@ -149,7 +140,7 @@ export default function SignUpForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed hover:shadow-md"
+              className="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-xl shadow-[0_8px_20px_-6px_rgba(16,185,129,0.4)] text-base font-bold text-white bg-emerald-500 hover:bg-emerald-400 hover:-translate-y-0.5 hover:shadow-[0_12px_24px_-6px_rgba(16,185,129,0.5)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-400 transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
               {isLoading ? (
                 <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -162,9 +153,9 @@ export default function SignUpForm() {
             </button>
             
             {/* Sign In Link */}
-            <p className="text-center text-sm text-gray-500 mt-6 font-medium">
+            <p className="text-left text-sm text-gray-500 mt-6 font-medium">
               Already have an account?{' '}
-              <Link href="/signin" className="text-emerald-600 hover:text-emerald-700 font-bold transition-colors">
+              <Link href="/signin" className="text-emerald-500 hover:text-emerald-400 font-bold transition-colors">
                 Sign in
               </Link>
             </p>
@@ -172,50 +163,19 @@ export default function SignUpForm() {
         </div>
       </div>
 
-      {/* Right Column - Illustration Section */}
-      <div className="hidden lg:flex lg:w-1/2 bg-emerald-50/50 items-center justify-center p-12 relative overflow-hidden">
-        
-        {/* Soft Background Orbs */}
-        <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-emerald-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-teal-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-70"></div>
-        
-        {/* Recolored Light Theme Illustration */}
-        <div className="relative w-full max-w-lg aspect-square flex items-center justify-center z-10">
-          <svg viewBox="0 0 400 400" className="w-full h-full drop-shadow-xl" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Main backdrop circle */}
-            <circle cx="200" cy="200" r="150" fill="#ffffff" stroke="#e5e7eb" strokeWidth="2"/>
-            {/* Rocket Tip */}
-            <path d="M200 80L240 140H160L200 80Z" fill="#10b981"/>
-            {/* Rocket Body */}
-            <rect x="175" y="140" width="50" height="100" fill="#f3f4f6"/>
-            {/* Left Fin */}
-            <path d="M150 200L175 140V240H150V200Z" fill="#d1d5db"/>
-            {/* Right Fin */}
-            <path d="M250 200L225 140V240H250V200Z" fill="#d1d5db"/>
-            {/* Window */}
-            <circle cx="200" cy="170" r="15" fill="#ffffff" stroke="#e5e7eb" strokeWidth="2"/>
-            {/* Thruster fire */}
-            <path d="M175 240H225L200 300L175 240Z" fill="#f59e0b" className="animate-pulse"/>
-            <path d="M185 240H215L200 280L185 240Z" fill="#fbbf24"/>
-            {/* Soft decorative dots */}
-            <circle cx="100" cy="120" r="4" fill="#d1fae5"/>
-            <circle cx="300" cy="100" r="6" fill="#d1fae5"/>
-            <circle cx="320" cy="250" r="3" fill="#a7f3d0"/>
-            <circle cx="80" cy="280" r="5" fill="#a7f3d0"/>
-          </svg>
-        </div>
-      </div>
+      {/* Empty Soft White Right Side */}
+      <div className="hidden lg:block lg:flex-1 bg-[#fafafa]"></div>
 
-      {/* Animated Success Toast (Light Mode) */}
+      {/* Animated Success Toast */}
       <div 
-        className={`fixed bottom-6 right-6 z-50 flex items-center gap-4 bg-white border border-gray-100 text-gray-800 px-6 py-4 rounded-2xl shadow-xl transition-all duration-500 transform ${showToast ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}
+        className={`fixed bottom-6 right-6 z-50 flex items-center gap-4 bg-white border border-gray-100 text-gray-800 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 transform ${showToast ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0 pointer-events-none'}`}
       >
-        <div className="flex-shrink-0 bg-emerald-100 rounded-full p-1.5">
-          <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex-shrink-0 bg-emerald-50 rounded-full p-1.5">
+          <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" className={showToast ? "animate-[dash_0.5s_ease-out_forwards]" : ""} strokeDasharray="24" strokeDashoffset="24" />
           </svg>
         </div>
-        <span className="font-bold text-sm tracking-wide">Account verified. Redirecting...</span>
+        <span className="font-bold text-sm tracking-wide">Signup completed. Redirecting to signin...</span>
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
