@@ -30,7 +30,7 @@ const StoreGrid = () => {
     const fetchStores = async () => {
       try {
         // GET request to your store endpoint
-        const response = await axios.get('http://localhost:5002/api/store');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/store`);
         
         // Robust array extraction logic
         let fetchedStores: Store[] = [];

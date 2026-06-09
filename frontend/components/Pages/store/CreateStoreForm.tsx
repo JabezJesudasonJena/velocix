@@ -7,6 +7,10 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import api from '@/utils/axios';
 import axios from 'axios';
 
+interface Coordinates {
+  lat: number;
+  lng: number;
+}
 
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ['latin'],
@@ -24,14 +28,56 @@ export default function CreateStoreForm() {
   });
   
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [showToast, setShowToast] = useState(false);
+
+  // Corrected TypeScript generic
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleUserLocation = () => {
+    setIsDetecting(true);
+    setError(null);
+
+    if(!navigator.geolocation){
+      setError("Geolocation is not supported by your browser.");
+      setIsDetecting(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        const coordinates = { lat, lng };
+        setUserLocation(coordinates); 
+        setFormData(prev => ({
+          ...prev,
+          lat: lat.toString(),
+          lng: lng.toString()
+        }));
+        localStorage.setItem('userLocation', JSON.stringify(coordinates));
+        setIsDetecting(false);
+      },
+      (error) => {
+        setError(`Failed to retrieve users Location: ${error.message}`);
+        setIsDetecting(false);
+      },
+      // Restored high accuracy config
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +93,7 @@ export default function CreateStoreForm() {
     };
 
     try {
-      await api.post('http://localhost:5002/api/store/create', payload);
+      await api.post(`${process.env.NEXT_PUBLIC_API_URL}/store/create`, payload);
       
       setShowToast(true);
       setTimeout(() => {
@@ -100,7 +146,7 @@ export default function CreateStoreForm() {
 
           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
             
-            {/* Store Name - Increased Size */}
+            {/* Store Name */}
             <div className="space-y-2.5">
               <label className="block text-base font-bold text-gray-700" htmlFor="name">Store Name</label>
               <input
@@ -115,7 +161,7 @@ export default function CreateStoreForm() {
               />
             </div>
 
-            {/* Description Area - Increased Size */}
+            {/* Description Area */}
             <div className="space-y-2.5">
               <label className="block text-base font-bold text-gray-700" htmlFor="desc">Store Description</label>
               <textarea
@@ -130,7 +176,7 @@ export default function CreateStoreForm() {
               />
             </div>
 
-            {/* Bottom Row: Coordinates (Kept smaller for visual hierarchy) */}
+            {/* Bottom Row: Coordinates */}
             <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
               <h3 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -164,6 +210,48 @@ export default function CreateStoreForm() {
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder-gray-300 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-400/20 transition-all text-sm font-medium"
                     placeholder="e.g. 80.2707"
                   />
+                </div>
+                
+                {/* Button Section - Spans full width of the grid */}
+                <div className='sm:col-span-2 space-y-4 pt-2'>
+                  <button
+                    type="button"
+                    onClick={handleUserLocation}
+                    disabled={isDetecting || userLocation !== null}
+                    className="relative flex items-center justify-center w-full gap-2 px-4 py-3 text-sm font-bold text-emerald-700 transition-all duration-200 bg-emerald-100 rounded-xl hover:bg-emerald-200 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none shadow-sm hover:cursor-pointer"
+                  >
+                    {isDetecting ? (
+                      <>
+                        <svg className="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Acquiring GPS Signal...
+                      </>
+                    ) : userLocation ? (
+                      <>
+                        <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Location Locked</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Auto-Detect Location
+                      </>
+                    )}
+                  </button>
+
+                  {userLocation && (
+                    <div className="flex items-center justify-between p-3 bg-emerald-50/50 border border-emerald-100 rounded-lg text-xs font-mono text-emerald-800">
+                      <span>Lat: {userLocation.lat.toFixed(6)}</span>
+                      <span>Lng: {userLocation.lng.toFixed(6)}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

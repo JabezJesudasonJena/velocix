@@ -13,14 +13,19 @@ class StoreService{
         }
 
         // Map the incoming coordinates to the Store columns the schema expects.
-        return await prisma.store.create({
-            data:{
-                name: data.name,
-                ownerId:user.id,
-                lat: data.lat ?? data.latitude,
-                lng: data.lng ?? data.longitude   
-            }
-        })
+
+        const prismaStore = await prisma.$executeRaw`
+            INSERT INTO "Store" ("name", "ownerId","desc", "lat", "lng", "location")
+            VALUES(
+                ${data.name},
+                ${user.id},
+                ${data.desc},
+                ${data.lat},
+                ${data.lng},
+                ST_SetSRID(ST_MakePoint(${data.lat}::float, ${data.lng}::float), 4326)::geography 
+            );
+        `
+        return prismaStore;
     }
 
 

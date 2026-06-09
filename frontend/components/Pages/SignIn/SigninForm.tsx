@@ -37,7 +37,7 @@ export default function SignInForm() {
 
     try {
       // POST request to your signin endpoint
-      const response = await axios.post('http://localhost:5002/api/auth/signin', formData);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, formData);
       
       // It saves the token to the localstorage
       localStorage.setItem('velocix_token', response.data.token);

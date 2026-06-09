@@ -47,7 +47,7 @@ export default function StoreDetailsPage({ params }: { params: Promise<{ id: str
   useEffect(() => {
     const fetchStoreDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5002/api/store/storeproducts/${storeId}`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/store/storeproducts/${storeId}`);
         
         if (response.data && response.data.data) {
           setStore(response.data.data);

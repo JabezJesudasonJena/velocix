@@ -45,7 +45,7 @@ const ProductGrid = () => {
     // Fetch Products
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5002/api/product');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/product`);
         let fetchedProducts = [];
         
         if (Array.isArray(response.data)) {
@@ -68,7 +68,7 @@ const ProductGrid = () => {
     // Fetch Stores
     const fetchStores = async () => {
       try {
-        const response = await axios.get('http://localhost:5002/api/store/');
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/store`);
         let fetchedStores = [];
         
         if (Array.isArray(response.data)) {

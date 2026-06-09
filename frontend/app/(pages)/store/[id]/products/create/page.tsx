@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import api from '@/utils/axios'; // Using your custom Axios instance
 
+
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ['latin'],
   display: 'swap',

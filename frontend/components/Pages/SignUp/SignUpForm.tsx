@@ -38,7 +38,7 @@ export default function SignUpForm() {
     setError('');
 
     try {
-      await axios.post('http://localhost:5002/api/auth/signup', formData);
+      await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, formData);
       setShowToast(true);
       setTimeout(() => {
         router.push('/signin');
