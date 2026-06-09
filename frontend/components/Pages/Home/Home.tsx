@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Link from 'next/link';
-// Replace with your custom api instance if you want to use the auth interceptor: import api from '@/lib/axios';
 import axios from 'axios';
 
 // Initialize premium font
@@ -12,7 +11,7 @@ const jakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-// 1. Define the TypeScript interfaces
+// Define the TypeScript interfaces
 interface Product {
   id: string | number;
   storeId: string | number;
@@ -126,9 +125,10 @@ const ProductGrid = () => {
             </div>
           ) : (
             products.map((product) => (
-              <div 
+              <Link 
+                href={`/product/${product.id}`}
                 key={product.id} 
-                className="group bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out cursor-pointer flex flex-col justify-between"
+                className="group bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-out cursor-pointer flex flex-col justify-between block"
               >
                 <div>
                   <div className="w-full h-36 bg-gray-50 rounded-xl mb-5 flex items-center justify-center overflow-hidden group-hover:bg-emerald-50 transition-colors duration-300">
@@ -161,7 +161,7 @@ const ProductGrid = () => {
                     <span className="text-gray-600">{product.storeId}</span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))
           )}
         </div>
