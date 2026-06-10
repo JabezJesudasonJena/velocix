@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/layout/Header';// Ensure this matches your folder structure
 import Footer from '@/components/layout/Footer';
+import ReduxProvider from '@/components/ReduxProvider';
 
 // Next.js Metadata API for SEO
 export const metadata: Metadata = {
@@ -22,14 +23,16 @@ export default function RootLayout({
       <body className="antialiased bg-gray-50 text-gray-900 flex flex-col min-h-screen">
         
         {/* The Header stays at the top of every page */}
-        <Header />
-        
-        {/* The main content area where your page.tsx files will render */}
-        <main className="flex-grow">
-          {children}
-        </main>
+        < ReduxProvider >
+          <Header />
+          
+          {/* The main content area where your page.tsx files will render */}
+          <main className="flex-grow">
+            {children}
+          </main>
 
-        <Footer/>
+          <Footer/>
+        </ReduxProvider>
 
       </body>
     </html>

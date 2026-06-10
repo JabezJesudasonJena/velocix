@@ -80,6 +80,20 @@ class ProductService{
         })
     }
 
+    static async getProductsByName(name){
+        if(!name) throw new AppError("No Name defined",400);
+        const products =  await prisma.product.findMany({
+            where:{
+                name: name
+            },
+            orderBy:{
+                id: "asc"
+            }
+        })
+        if(products.length == 0) throw new AppError("No Products Found !", 400)
+        return products;
+    }
+
     static async updateProduct(productId, userId ,data){
         const store = await prisma.store.findFirst({
             where:{

@@ -18,6 +18,7 @@ productRouter.get("/sorted",ProductController.getSortedProducts);
 
 productRouter.get("/", ProductController.getAllProducts)
 productRouter.get("/paginated", ProductController.getPaginatedProduct)
+productRouter.get("/productsbyname", ProductController.getProductsByName);
 
 
 productRouter.put("/update/:id", protect, ProductController.updateProduct)

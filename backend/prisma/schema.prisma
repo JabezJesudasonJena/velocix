@@ -1,9 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
+  extensions = [postgis]
 }
 
 model User {
@@ -24,6 +26,8 @@ model Store {
   desc    String?
   lat     Float   @default(13.0827)
   lng     Float   @default(80.2707)
+
+  location Unsupported("geography(Point, 4326)")
 
   order    Order[]
   products Product[]
