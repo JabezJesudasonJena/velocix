@@ -28,8 +28,6 @@ model Store {
   lng     Float   @default(80.2707)
 
   location Unsupported("geography(Point, 4326)")
-
-  order    Order[]
   products Product[]
   owner    User      @relation(fields: [ownerId], references: [id])
 }
@@ -50,11 +48,9 @@ model Order {
   id        Int         @id @default(autoincrement())
   userId    Int
   total     Float
-  storeId   Int
   createdAt DateTime    @default(now())
   status    String      @default("pending")
   updatedAt DateTime    @updatedAt
-  store     Store       @relation(fields: [storeId], references: [id])
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
 }

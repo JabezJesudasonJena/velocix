@@ -85,6 +85,55 @@ class OrderService{
         });
     }
 
+
+    // Add order
+    static async AddOrder(data, userId){
+        if(!userId) throw new AppError("No User ID present");
+
+        return await prisma.$transaction(async (tx) => {
+            let totalPrice = 0;
+            for(const item in data){
+                totalPrice = totalPrice + (data.quantity * data.price);
+            }
+
+            const order = await tx.order.create({
+                data:{
+                    userId: userId,
+                    status: "PENDING",
+                    total: totalPrice
+                }
+            })
+
+            for(const item in data){
+                const product = await tx.product.findFirst({
+                    where: {
+                        id : item.id
+                    }
+                });
+                if(!product) throw new AppError("Product not there in Database",404);
+                if(product.stock < item.quantity){
+                    throw new AppError("Stock is not enough", 400);
+                }
+                let newStock = product.stock - item.quantity;
+                let price = item.quantity * product.price;
+                await tx.product.update({
+                    where: {
+                        id: item.id
+                    },data:{
+                        stock: newStock
+                    }
+                })
+                const orderItem = await tx.orderItem.create({
+                    data:{
+                        orderId: order.id,
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        price: product.price
+                    }
+                })
+            }
+        })
+    }
     // GET order
 
     static async getOrder(orderId){
