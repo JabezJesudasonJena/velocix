@@ -1,0 +1,6 @@
+{
+    "watch": ["src"],
+    "ext": "js,mjs,json",
+    "legacyWatch": true,
+    "verbose": true
+}

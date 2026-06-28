@@ -8,7 +8,6 @@ import z from "zod"
 
 class AuthService{
     static async signUp(user){
-        // Input validation using zod
         registerUserSchema.parse(user);
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const isEmailAlreadyPresent = await prisma.user.findFirst({

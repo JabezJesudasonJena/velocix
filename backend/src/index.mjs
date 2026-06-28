@@ -22,12 +22,20 @@ app.use(cors({
     origin: true,
     credentials: true
 }));
+
+//Global middleware for logs
+app.use((req, res, next) => {
+    console.log(`${req.method}\t${req.url}`);   
+    next();
+})
 app.use("/api", router);
 
 // Routes
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+
 
 app.get("/health",(req, res)=>{
     res.send("Health os Ok!")
