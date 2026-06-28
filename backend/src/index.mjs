@@ -22,12 +22,20 @@ app.use(cors({
     origin: true,
     credentials: true
 }));
+
+//Global middleware for logs
+app.use((req, res, next) => {
+    console.log(`${req.method}\t${req.url}`);
+    next();
+})
 app.use("/api", router);
 
 // Routes
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
+
+
 
 app.get("/health",(req, res)=>{
     res.send("Health os Ok!")
@@ -44,3 +52,6 @@ app.use(globalErrorHandler);
 app.listen(PORT, () => {
     console.log(`Server is running on port http://localhost:${PORT}`);
 });
+
+
+export default app;

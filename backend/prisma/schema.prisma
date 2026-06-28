@@ -8,15 +8,28 @@ datasource db {
   extensions = [postgis]
 }
 
+enum UserRole {
+  consumer
+  seller
+  storeadmin
+  admin
+}
+
 model User {
   id        Int       @id @default(autoincrement())
   name      String
   email     String    @unique
   password  String
-  role      String    @default("consumer")
+  role      UserRole    @default(consumer)
+  wishList WishList?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   addresses Address[]
   orders    Order[]
   stores    Store[]
+  carts Cart[]
+  reviews Review[]
 }
 
 model Store {
@@ -24,61 +37,189 @@ model Store {
   name    String
   ownerId Int
   desc    String?
+  status String? @default("active")
   lat     Float   @default(13.0827)
   lng     Float   @default(80.2707)
 
   location Unsupported("geography(Point, 4326)")
 
+
+  createdAt DateTime @default(now())
   order    Order[]
   products Product[]
   owner    User      @relation(fields: [ownerId], references: [id])
+}
+
+model ProductImage {
+  id Int @id @default(autoincrement())
+  productId Int
+  url String
+
+  product Product @relation(fields:[productId], references: [id])
+}
+
+model Category{
+  id Int @id @default(autoincrement())
+  name String
+  createdAt DateTime @default(now())
+
+  products Product[]
 }
 
 model Product {
   id       Int         @id @default(autoincrement())
   name     String
   price    Float
+  desc  String
   storeId  Int
-  category String
+  categoryId Int
   isEdible Boolean     @default(false)
-  stock    Int         @default(1)
-  items    OrderItem[]
+  status String? @default("AVL")
+  sku String @unique
+  discount_price Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  categories Category @relation(fields: [categoryId], references: [id])
   store    Store       @relation(fields: [storeId], references: [id])
+  inventory Inventory?
+  cartItems CartItem[]
+  wishLists WishList[]
+  productImages ProductImage[]
+  reviews Review[]
+
+  @@index([storeId])
+  @@index([categoryId])
+  @@index([name])
+}
+
+model Inventory {
+  id Int @id @default(autoincrement())
+  producId Int @unique
+  quantity Int
+  reservedQuantity Int
+  updated_at DateTime @updatedAt
+  product Product @relation(fields: [producId], references: [id])
+
+  @@index([producId])
 }
 
 model Order {
   id        Int         @id @default(autoincrement())
   userId    Int
+  payment Payment?
   total     Float
   storeId   Int
+  addressId Int
   createdAt DateTime    @default(now())
   status    String      @default("pending")
+  couponId Int @unique
   updatedAt DateTime    @updatedAt
   store     Store       @relation(fields: [storeId], references: [id])
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
+  address Address @relation(fields: [addressId], references: [id])
+  coupon Coupon @relation(fields: [couponId], references: [id])
+
+  @@index([userId])
+  @@index([storeId])
+  
 }
 
 model OrderItem {
   id        Int      @id @default(autoincrement())
-  productId Int
+  productName String
   orderId   Int
   quantity  Int
-  price     Float
+  ProductPrice     Float
   createdAt DateTime @default(now())
   order     Order    @relation(fields: [orderId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id])
 
   @@index([orderId])
   @@index([id])
-  @@index([productId])
+}
+
+model Cart {
+  id Int @id @default(autoincrement())
+  user_id Int 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items CartItem[]
+  user User @relation(fields: [user_id], references: [id])
+}
+
+model CartItem{
+  id Int @id @default(autoincrement())
+  cartId Int 
+  productId Int
+  quantity Int
+  products Product @relation(fields: [productId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id])
+}
+
+model WishList {
+  id Int @id @default(autoincrement()) 
+  userId Int @unique
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  products Product[]
 }
 
 model Address {
   id      Int     @id @default(autoincrement())
+  full_name String
+  phone String
+  addressLine1 String?
+  addressLine2 String?
   city    String?
   pincode String?
   userId  Int
   village String?
+  is_default Boolean
+
   user    User    @relation(fields: [userId], references: [id])
+  orders Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+
+model Payment{
+  id Int @id @default(autoincrement())
+  orderId Int @unique
+
+  method String
+  transactionId String?
+  amount Float
+  status String
+
+  order Order @relation(fields: [orderId], references: [id])
+}
+
+model Coupon {
+  id Int @id @default(autoincrement())
+
+  code String @unique
+  type String
+  value Float
+
+  orders Order[]
+}
+
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  userId Int
+  productId Int
+
+  rating Int
+  comment String?
+
+  user User @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
 }
