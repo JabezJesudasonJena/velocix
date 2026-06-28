@@ -25,7 +25,7 @@ app.use(cors({
 
 //Global middleware for logs
 app.use((req, res, next) => {
-    console.log(`${req.method}\t${req.url}`);   
+    console.log(`${req.method}\t${req.url}`);
     next();
 })
 app.use("/api", router);
