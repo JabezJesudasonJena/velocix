@@ -2,13 +2,14 @@ import jwt from "jsonwebtoken";
 import prisma from "../db/prismadb.mjs";
 import bcrypt from "bcrypt";
 import AppError from "../utils/appError.mjs";
+import { registerUserSchema } from "../schema/signup/signupUserSchema.js";
+import { signinUserSchema } from "../schema/signin/signinUserSchema.mjs";
+import z from "zod"
 
 class AuthService{
     static async signUp(user){
-        if (!user.name || !user.email || !user.password) {
-            throw new AppError("Name, email, and password are required");
-        }
-
+        // Input validation using zod
+        registerUserSchema.parse(user);
         const hashedPassword = await bcrypt.hash(user.password, 10);
         const isEmailAlreadyPresent = await prisma.user.findFirst({
             where: {
@@ -28,6 +29,7 @@ class AuthService{
     }
 
     static async signIn(user){
+        signinUserSchema.parse(user);
         const prismaUser = await prisma.user.findUnique({
             where : {
                 email : user.email

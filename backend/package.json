@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest --run",
+    "dev": "nodempn src/index,mjs -quiet",
     "mod": "nodemon src/index.mjs --quiet",
     "start": "node src/index.mjs",
     "build": "node src/index.mjs"
@@ -34,7 +35,9 @@
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "supertest": "^7.2.2",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
@@ -42,6 +45,7 @@
     "nodemon": "^3.1.14",
     "prisma": "^7.8.0",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }
