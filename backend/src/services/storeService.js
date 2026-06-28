@@ -8,21 +8,22 @@ const parsePositiveInt = (value, fallback) => {
 
 class StoreService{
     static async AddStore(data, user){
-        if(user.role != "store-admin"){
+        if(user.role != 'storeadmin'){
             throw new AppError("Not a store-admin", 403);
         }
 
         // Map the incoming coordinates to the Store columns the schema expects.
 
         const prismaStore = await prisma.$executeRaw`
-            INSERT INTO "Store" ("name", "ownerId","desc", "lat", "lng", "location")
+            INSERT INTO "Store" ("name", "ownerId","desc", "lat", "lng", "location", "status")
             VALUES(
                 ${data.name},
                 ${user.id},
                 ${data.desc},
                 ${data.lat},
                 ${data.lng},
-                ST_SetSRID(ST_MakePoint(${data.lat}::float, ${data.lng}::float), 4326)::geography 
+                ST_SetSRID(ST_MakePoint(${data.lat}::float, ${data.lng}::float), 4326)::geography,
+                ${data.status}
             );
         `
         return prismaStore;

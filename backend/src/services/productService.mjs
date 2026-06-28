@@ -41,7 +41,9 @@ class ProductService{
                 storeId: store.id,
                 category: data.category,
                 isEdible: data.isEdible,
-                stock: data.stock
+                categoryId: 1,
+                sku: data.sku,
+                desc: data.desc
             }
         });
     }

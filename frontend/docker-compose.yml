@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: velocix_frontend_cont
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000/api
+    command: npm run dev
+    volumes:
+      - .:/frontend
+    ports:
+      - '3000:3000'
