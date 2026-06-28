@@ -1,27 +1,27 @@
 version: '3.9'
-
 services:
   backend:
     build: .
-    container_name: ecommerce_backend
+    container_name: velocix_backend_cont  
     ports:
-      - '3000:3000'
+      - '5000:5000'
     
     volumes:
-      - ./app
+      - .:/app
       - /app/node_modules
     
-    env_file:
-      ./app/env
-    
+    env_file: .env
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    command: npm run dev
     depends_on:
       postgres:
         condition: service_healthy
   
   postgres:
-    image: postgres:17
+    image: postgis/postgis:17-3.5
     container_name: velocix_postgres
-    restart: unless_stopped
+    restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgrespass 
@@ -35,6 +35,17 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  pgadmin:
+    container_name: cointainer_pgadmin
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    restart: unless-stopped
 
 volumes:
   postgres_data:

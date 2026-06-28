@@ -16,10 +16,8 @@ export const protect = catchAsync(async(req, res, next)=> {
     if(!token){
         throw new AppError('You are not logged. Please Log in to get Access', 401);
     }
-    
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    
     next();
 })
 
