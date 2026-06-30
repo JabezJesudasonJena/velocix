@@ -56,6 +56,36 @@ class ProductService{
         });
     }
 
+    static async createProduct( data, storeId){
+        if(!storeId) throw new AppError("Store Id is not defiend");
+        else if(!data) throw new AppError("Data is not defiened");
+        return await prisma.$transaction(async(tx) => {
+            const product = await tx.product.create({
+                data:{
+                    name : data.name,
+                    price: data.price,
+                    desc: data.desc,
+                    storeId: storeId,
+                    categoryId: data.categoryId,
+                    sku: data.sku
+                }
+            });
+            await tx.inventory.create({
+                data:{
+                    product: product.id,
+                    quantity: data.quantity,
+                    reservedQuantity: 0
+                }
+            });
+            await tx.ProductImage.createMany({
+                data:data.images(url => {
+                    productId: product.id,
+                    url
+                })
+            })
+        })
+    }
+
     static async getPaginatedProducts(page = {}){
         const currentPage = parsePositiveInt(page.page, 1);
         const limit = parsePositiveInt(page.limit, 20);

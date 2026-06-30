@@ -12,3 +12,13 @@ export const store = async (req , res, next) => {
     req.store = store;
     next();
 }
+
+export const storeProtectMidd = async (req, res, next) => {
+    if(!req.user.id || !req.store.ownerId) {
+        throw new AppError("No store or user data provided", 404);
+    }
+    if(req.user.id != req.store.ownerId) {
+        throw new AppError("This user is not the owner of the store !", 400);
+    }
+    next();
+}
