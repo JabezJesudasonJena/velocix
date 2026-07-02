@@ -43,7 +43,6 @@ model Store {
 
   location Unsupported("geography(Point, 4326)")
 
-
   createdAt DateTime @default(now())
   order    Order[]
   products Product[]

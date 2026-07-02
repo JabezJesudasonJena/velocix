@@ -22,8 +22,17 @@ class ProductController{
         })
     });
 
+    static createProduct = catchAsync(async (req, res) => {
+        const product = await ProductService.createProduct(req.body,req.store.id);
+        return res.status(201).json({
+            success: true,
+            data: product
+        })
+    })
+
     static getProduct = catchAsync(async(req, res) => {
-        const product = await ProductService.getSingleProduct(req.params.id);
+        const id = Number(req.params.id)
+        const product = await ProductService.getSingleProduct(id);
         return res.status(200).json({
             success: true,
             data: product
