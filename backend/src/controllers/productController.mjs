@@ -71,6 +71,14 @@ class ProductController{
         });
     })
 
+    static getSearchProduct = catchAsync(async(req, res) => {
+        const product = await ProductService.searchProducts(req.query.q);
+        return res.status(200).json({
+            success: true,
+            data: product
+        })
+    })
+
 }
 
 export default ProductController;

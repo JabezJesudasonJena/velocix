@@ -127,6 +127,18 @@ class ProductService{
         return products;
     }
 
+    static async searchProducts(data){
+        if(!data) throw new AppError("No Search query is passed");
+        return await prisma.product.findMany({
+            where: {
+                name : {
+                    contains : data,
+                    mode: 'insensitive'
+                }
+            }
+        })
+    }
+
     static async updateProduct(productId, userId ,data){
         const store = await prisma.store.findFirst({
             where:{
