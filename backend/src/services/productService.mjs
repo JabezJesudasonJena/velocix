@@ -56,7 +56,8 @@ class ProductService{
         });
     }
 
-    static async createProduct( data, storeId){
+    static async createProduct( body, storeId){
+        const {data} = body;
         if(!storeId) throw new AppError("Store Id is not defiend");
         else if(!data) throw new AppError("Data is not defiened");
         return await prisma.$transaction(async(tx) => {
@@ -72,13 +73,13 @@ class ProductService{
             });
             await tx.inventory.create({
                 data:{
-                    product: product.id,
+                    producId: product.id,
                     quantity: data.quantity,
                     reservedQuantity: 0
                 }
             });
             await tx.ProductImage.createMany({
-                data:data.images(url => {
+                data:data.images.map(url => {
                     productId: product.id,
                     url
                 })

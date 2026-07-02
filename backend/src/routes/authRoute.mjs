@@ -8,7 +8,7 @@ const authRouter = Router();
 authRouter.post("/signup", AuthController.signUp);
 authRouter.post("/signin", AuthController.signIn);
 
-// It will return user Detials
+// It will return user Detials  
 authRouter.get("/profile",protect ,AuthController.profile)
 
 

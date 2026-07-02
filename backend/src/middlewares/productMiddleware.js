@@ -2,6 +2,7 @@ import prisma from "../db/prismadb.mjs";
 import AppError from "../utils/appError.mjs";
 
 export const store = async (req , res, next) => {
+    console.log(req.body.storeId)
     const store = await prisma.store.findFirst({
         where:{
             id: req.body.storeId

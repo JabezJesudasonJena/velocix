@@ -15,7 +15,7 @@ productRouter.post(
 )
 
 productRouter.post(
-    "/create",
+    "/add",
     protect,
     store,
     storeProtectMidd,

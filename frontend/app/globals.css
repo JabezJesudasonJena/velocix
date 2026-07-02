@@ -1,45 +1,7 @@
-/* 1. New Tailwind v4 Import Directive */
 @import "tailwindcss";
 
-/* 2. Wrap custom @apply directives inside the @layer base */
 @layer base {
-  html {
-    /* Enables smooth scrolling when navigating via anchor links */
-    scroll-behavior: smooth;
-  }
-
   body {
-    /* This will now work properly in v4! */
-    @apply text-gray-900 bg-gray-50;
-    
-    /* Critical for premium fonts: Makes them render sharply */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-}
-
-/* 3. Custom Emerald Scrollbar (Standard CSS, no changes needed) */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px; 
-}
-
-::-webkit-scrollbar-track {
-  background: #f8fafc; 
-}
-
-::-webkit-scrollbar-thumb {
-  background: #10b981; 
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #059669; 
-}
-
-/* 4. Utilities Layer for global focus states */
-@layer utilities {
-  *:focus-visible {
-    @apply outline-none ring-2 ring-emerald-500 ring-offset-1;
+    @apply bg-neutral-950 text-neutral-100;
   }
 }
