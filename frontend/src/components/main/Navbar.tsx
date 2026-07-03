@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/src/redux/store/store';
-// 1. Import the SearchBar component we created
 import SearchBar from '@/src/components/main/SearchBar'; 
 
 interface User {
@@ -20,8 +19,14 @@ export default function Navbar() {
   
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Hydration state
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Flag component as mounted on the client to safely render localStorage data
+    setMounted(true);
+
     const fetchProfile = async () => {
       let token = localStorage.getItem('velocix_token');
       if (!token) {
@@ -60,7 +65,6 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = (redirect = true) => {
-    // Note: Ensuring you clear the same token keys you check for
     localStorage.removeItem('velocix_token');
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
@@ -95,7 +99,6 @@ export default function Navbar() {
                 Welcome, <span className="font-semibold text-white">{user.name}</span>
               </span>
             ) : (
-              /* Conditional rendering based on pathname */
               pathname === '/login' || pathname === '/signin' ? (
                 <Link href="/signup" className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition">
                   Signup
@@ -109,9 +112,13 @@ export default function Navbar() {
           </>
         )}
         
-        <button className="px-4 py-2 border border-neutral-800 rounded-lg text-sm">
-          Cart [{cartCount}]
-        </button>
+        {/* Updated: Converted to Link and applies hydration check */}
+        <Link 
+          href="/checkout" 
+          className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition block text-center"
+        >
+          Cart [{mounted ? cartCount : 0}]
+        </Link>
         
         {user && (
           <button 
