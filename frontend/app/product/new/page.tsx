@@ -60,6 +60,8 @@ export default function CreateProductPage() {
     };
 
     try {
+      console.log(payload)
+      console.log(parsedStoreId)
       const response = await fetchClient("/product/add", {
         method: "POST",
         body: JSON.stringify({
