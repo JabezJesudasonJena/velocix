@@ -1,6 +1,6 @@
 import ProductCard from "@/src/components/product/ProductCard";
 import { Product } from "@/src/types/product";
-import Link from 'next/link'
+import Link from 'next/link';
 
 // Fetching directly from your backend
 async function getProducts(): Promise<Product[]> {
@@ -17,6 +17,7 @@ async function getProducts(): Promise<Product[]> {
     return [];
   }
 }
+
 export default async function HomePage() {
   const products = await getProducts();
 
@@ -26,16 +27,20 @@ export default async function HomePage() {
       {/* Grid Display */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
+          // The key belongs ONLY here on the outermost element
           <Link href={`/product/${product.id}`} key={product.id}>
-            <ProductCard key={product.id} product={product} />
+            <ProductCard product={product} />
           </Link>
         ))}
       </div>
 
-      {/* Floating Action Button from image_fb92ff.png */}
-      <button className="fixed bottom-10 right-10 w-16 h-16 bg-white text-black rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-105 transition-transform">
+      {/* Floating Action Button - Now links to the create page */}
+      <Link 
+        href="/product/create"
+        className="fixed bottom-10 right-10 w-16 h-16 bg-white text-black rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-105 transition-transform"
+      >
         +
-      </button>
+      </Link>
     </main>
   );
 }

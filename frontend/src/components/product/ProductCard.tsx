@@ -1,63 +1,49 @@
-"use client";
-import { useDispatch, useSelector } from "react-redux";
-import { Product } from "@/src/types/product";
-import { updateQuantity } from "@/src/redux/store/cartSlice";
-import type { RootState } from "@/src/redux/store/store";
+// Inside src/components/product/ProductCard.tsx
+"use client"
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { updateQuantity } from '@/src/redux/store/cartSlice'; // Verify this path
+import { Product } from '@/src/types/product';
 
 export default function ProductCard({ product }: { product: Product }) {
   const dispatch = useDispatch();
-  const quantity = useSelector((state: RootState) => state.cart.items[product.id] || 0);
 
-  const handleQuantityChange = (delta: number) => {
-    dispatch(updateQuantity({ id: product.id, delta }));
+  // Update your handler to match the new payload structure
+  const handleQuantityChange = (e: React.MouseEvent, delta: number) => {
+    e.preventDefault(); // Prevents the parent <Link> from triggering navigation
+    
+    dispatch(
+      updateQuantity({
+        product: { 
+          id: product.id, 
+          name: product.name, 
+          price: product.price 
+        },
+        delta: delta,
+      })
+    );
   };
 
   return (
-    <div className="bg-neutral-900 border border-neutral-800 p-6 rounded-2xl hover:border-neutral-700 transition">
-      <h3 className="text-lg font-semibold text-white">{product.name}</h3>
-      <p className="text-neutral-400 text-sm mt-1 mb-4 line-clamp-2">{product.desc}</p>
-      
-      <div className="flex justify-between items-center">
-        <div className="flex flex-col">
-          {product.discount_price ? (
-            <span className="text-lg font-bold text-emerald-400">₹{proxduct.discount_price}</span>
-          ) : (
-            <span className="text-lg font-bold text-white">₹{product.price}</span>
-          )}
-        </div>
-
-        <div className="flex bg-neutral-950 border border-neutral-800 rounded-lg">
-          <button
-            type="button"
-            onClick={() => handleQuantityChange(-1)}
-            disabled={quantity === 0}
-            className="px-3 py-1 hover:text-white transition disabled:cursor-not-allowed disabled:text-neutral-600"
-          >
-            -
-          </button>
-          <span className="px-3 py-1 border-x border-neutral-800 text-sm font-mono min-w-10 text-center">
-            {quantity}
-          </span>
-          <button
-            type="button"
-            onClick={() => handleQuantityChange(1)}
-            className="px-3 py-1 hover:text-white transition"
-          >
-            +
-          </button>
-        </div>
+    <div className="bg-neutral-900 p-4 rounded-xl border border-neutral-800 flex flex-col justify-between">
+      <div>
+        <h2 className="text-xl font-bold mb-2">{product.name}</h2>
+        <p className="text-neutral-400 mb-4">${product.price}</p>
       </div>
-      
-      {/* Badge for status */}
-      <div className="mt-4 flex gap-2">
-        <span className="text-[10px] uppercase tracking-wider bg-neutral-800 px-2 py-0.5 rounded text-neutral-400">
-          {product.status || "AVL"}
-        </span>
-        {product.isEdible && (
-          <span className="text-[10px] uppercase tracking-wider bg-emerald-900/30 text-emerald-500 px-2 py-0.5 rounded">
-            Edible
-          </span>
-        )}
+
+      <div className="flex gap-2 mt-4">
+        <button 
+          onClick={(e) => handleQuantityChange(e, -1)}
+          className="px-4 py-2 bg-neutral-800 text-white rounded hover:bg-neutral-700"
+        >
+          -
+        </button>
+        <button 
+          onClick={(e) => handleQuantityChange(e, 1)}
+          className="px-4 py-2 bg-white text-black rounded hover:bg-neutral-200"
+        >
+          + Add
+        </button>
       </div>
     </div>
   );
