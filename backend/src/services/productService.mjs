@@ -1,3 +1,4 @@
+import { connect } from "node:http2";
 import prisma from "../db/prismadb.mjs";
 import AppError from "../utils/appError.mjs";
 
@@ -72,10 +73,10 @@ class ProductService{
                 }
             });
             await tx.inventory.create({
-                data:{
-                    producId: product.id,
+                data:{  
                     quantity: data.quantity,
-                    reservedQuantity: 0
+                    reservedQuantity: 0,
+                    productId: product.id
                 }
             });
             await tx.ProductImage.createMany({

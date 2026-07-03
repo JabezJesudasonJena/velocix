@@ -85,8 +85,6 @@ class OrderService{
         });
     }
 
-    // GET order
-
     static async getOrder(orderId){
         return await prisma.order.findUnique({
             where:{
@@ -108,6 +106,113 @@ class OrderService{
             }
         })
     }
+
+    static async createOrder(userId, data, items) {
+    if (!Array.isArray(items) || items.length === 0) throw new AppError("Order Items are required!", 400);
+
+    return await prisma.$transaction(async (tx) => {
+        // 1. Fetch all products and their inventory in one query
+        const productIds = [...new Set(items.map((item) => item.productId))];
+        const products = await tx.product.findMany({
+            where: { id: { in: productIds } },
+            include: { inventory: true }
+        });
+        const productMap = new Map(products.map((product) => [product.id, product]));
+
+        let totalPrice = 0;
+        const processedItems = [];
+
+        // 2. Validate stock and calculate total price
+        for (const item of items) {
+            const product = productMap.get(item.productId);
+
+            if (!product) throw new AppError(`Product ${item.productId} not found!`, 404);
+            
+            if (!product.inventory || product.inventory.quantity < item.quantity) {
+                throw new AppError(`${product.name} is out of stock`, 400);
+            }
+
+            totalPrice += (product.price * item.quantity);
+
+            // Store the required data for the next step so we don't query the map again
+            processedItems.push({
+                productId: product.id,
+                productName: product.name,
+                quantity: item.quantity,
+                ProductPrice: product.price // Extracted from DB, not the frontend payload!
+            });
+        }
+
+        let targetAddressId = data?.addressId;
+
+        if (targetAddressId) {
+            const address = await tx.address.findFirst({
+                where: {
+                    id: targetAddressId,
+                    userId
+                },
+                select: {
+                    id: true
+                }
+            });
+        }
+
+        // 3. Create the single Order
+        const orderData = {
+            total: totalPrice,
+            status: "pending",
+            user: {
+                connect: {
+                    id: userId
+                }
+            }
+        };
+
+        if (targetAddressId) {
+            orderData.address = {
+                connect: {
+                    id: targetAddressId
+                }
+            };
+        }
+
+        if (data?.couponId) {
+            orderData.coupon = {
+                connect: {
+                    id: data.couponId
+                }
+            };
+        }
+
+        const order = await tx.order.create({
+            data: orderData
+        });
+
+        // 4. Create OrderItems and Decrement Stock
+        for (const item of processedItems) {
+            
+            await tx.orderItem.create({
+                data: {
+                    orderId: order.id,
+                    productName: item.productName,
+                    quantity: item.quantity,
+                    ProductPrice: item.ProductPrice
+                }
+            });
+
+            await tx.inventory.update({
+                // NOTE: Using 'producId' here to match the typo in your Prisma schema. 
+                // If you fixed the typo in schema.prisma, change this to 'productId'.
+                where: { productId: item.productId },
+                data: {
+                    quantity: { decrement: item.quantity }
+                }
+            });
+        }
+
+        return order;
+    });
+}
 }
 
 export default OrderService;
