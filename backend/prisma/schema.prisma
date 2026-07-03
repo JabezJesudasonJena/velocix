@@ -44,7 +44,6 @@ model Store {
   location Unsupported("geography(Point, 4326)")
 
   createdAt DateTime @default(now())
-  order    Order[]
   products Product[]
   owner    User      @relation(fields: [ownerId], references: [id])
 }
@@ -94,13 +93,13 @@ model Product {
 
 model Inventory {
   id Int @id @default(autoincrement())
-  producId Int @unique
+  productId Int @unique
   quantity Int
   reservedQuantity Int
   updated_at DateTime @updatedAt
-  product Product @relation(fields: [producId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
-  @@index([producId])
+  @@index([productId])
 }
 
 model Order {
@@ -108,20 +107,17 @@ model Order {
   userId    Int
   payment Payment?
   total     Float
-  storeId   Int
-  addressId Int
+  addressId Int?
   createdAt DateTime    @default(now())
   status    String      @default("pending")
-  couponId Int @unique
+  couponId Int? 
   updatedAt DateTime    @updatedAt
-  store     Store       @relation(fields: [storeId], references: [id])
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
-  address Address @relation(fields: [addressId], references: [id])
-  coupon Coupon @relation(fields: [couponId], references: [id])
+  address Address? @relation(fields: [addressId], references: [id])
+  coupon Coupon? @relation(fields: [couponId], references: [id])
 
   @@index([userId])
-  @@index([storeId])
   
 }
 

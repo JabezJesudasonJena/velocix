@@ -9,6 +9,14 @@ class OrderController {
             data: order
         });
     })
+
+    static createOrder = catchAsync(async(req, res) => {
+        const order = await OrderService.createOrder(req.user.id, req.body, req.body.items);
+        return res.status(200).json({
+            success:true,
+            data: order
+        })
+    })
 }
 
 export default OrderController;
