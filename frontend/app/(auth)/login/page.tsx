@@ -2,13 +2,13 @@ import LoginForm from "@/src/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex flex-col">
-
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-4xl grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-4xl font-bold mb-4">Sign in with your existing account</h2>
-            <p className="text-neutral-400">Welcome back! Please enter your credentials to access your dashboard.</p>
+    <main className="page-shell flex flex-col">
+      <div className="page-wrap flex flex-1 items-center justify-center">
+        <div className="grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2">
+          <div className="space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">Welcome Back</p>
+            <h2 className="text-4xl font-extrabold leading-tight">Sign in to continue shopping locally</h2>
+            <p className="max-w-md text-neutral-400">Access your account, track orders, and manage your cart across devices.</p>
           </div>
           <LoginForm />
         </div>

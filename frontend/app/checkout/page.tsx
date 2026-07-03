@@ -84,7 +84,7 @@ export default function CheckoutPage() {
   // Return a neutral loading state while SSR is happening
   if (!mounted) {
     return (
-      <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8 flex items-center justify-center">
+      <main className="page-shell flex items-center justify-center">
       </main>
     );
   }
@@ -92,10 +92,10 @@ export default function CheckoutPage() {
   // Empty cart state
   if (cartItems.length === 0) {
     return (
-      <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8 flex flex-col items-center justify-center">
-        <h1 className="text-3xl font-bold mb-4">Your Cart is Empty</h1>
-        <p className="text-neutral-400 mb-8">Add some products to your cart before checking out.</p>
-        <Link href="/" className="px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-neutral-200 transition-colors">
+      <main className="page-shell flex flex-col items-center justify-center text-center">
+        <h1 className="mb-4 text-3xl font-extrabold">Your Cart is Empty</h1>
+        <p className="mb-8 text-neutral-400">Add some products to your cart before checking out.</p>
+        <Link href="/" className="btn-primary px-6 py-3">
           Continue Shopping
         </Link>
       </main>
@@ -103,13 +103,13 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8 lg:p-12">
-      <div className="max-w-2xl mx-auto">
-        <Link href="/" className="text-neutral-500 hover:text-white transition-colors mb-6 inline-block">
+    <main className="page-shell">
+      <div className="page-wrap max-w-2xl">
+        <Link href="/" className="mb-6 inline-block text-sm text-neutral-500 transition-colors hover:text-white">
           &larr; Back to Shop
         </Link>
         
-        <h1 className="text-3xl font-bold mb-8">Review Your Order</h1>
+        <h1 className="mb-8 text-3xl font-extrabold tracking-tight">Review Your Order</h1>
 
         {error && (
           <div className="mb-6 bg-red-900/40 border border-red-800 text-red-200 p-4 rounded-lg">
@@ -117,13 +117,12 @@ export default function CheckoutPage() {
           </div>
         )}
 
-        {/* Centered Order Summary (Since form is removed) */}
-        <div className="bg-neutral-900 p-8 rounded-xl border border-neutral-800">
+        <div className="panel p-8">
           <h2 className="text-xl font-semibold mb-6 border-b border-neutral-800 pb-4">Cart Items</h2>
           
           <div className="space-y-4 max-h-96 overflow-y-auto pr-2 mb-6">
             {cartItems.map((item: any) => (
-              <div key={item.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-neutral-950 p-4 rounded-lg border border-neutral-800 gap-4">
+              <div key={item.id} className="flex flex-col gap-4 rounded-xl border border-neutral-800 bg-neutral-950 p-4 sm:flex-row sm:items-center sm:justify-between">
                 
                 {/* Item Details */}
                 <div className="flex-1">
@@ -132,17 +131,17 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Quantity Controls */}
-                <div className="flex items-center gap-3 bg-neutral-900 rounded-lg p-1 border border-neutral-800">
+                <div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900 p-1">
                   <button 
                     onClick={() => handleQuantityChange(item, -1)}
-                    className="w-8 h-8 flex items-center justify-center bg-neutral-800 text-white rounded hover:bg-neutral-700 transition-colors"
+                    className="h-8 w-8 rounded bg-neutral-800 text-white transition-colors hover:bg-neutral-700"
                   >
                     -
                   </button>
                   <span className="w-6 text-center font-medium">{item.quantity}</span>
                   <button 
                     onClick={() => handleQuantityChange(item, 1)}
-                    className="w-8 h-8 flex items-center justify-center bg-neutral-800 text-white rounded hover:bg-neutral-700 transition-colors"
+                    className="h-8 w-8 rounded bg-neutral-800 text-white transition-colors hover:bg-neutral-700"
                   >
                     +
                   </button>
@@ -174,7 +173,7 @@ export default function CheckoutPage() {
           <button 
             onClick={handlePlaceOrder}
             disabled={loading}
-            className="w-full bg-white text-black font-bold py-4 rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 text-lg"
+            className="w-full rounded-xl bg-blue-600 py-4 text-lg font-bold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
           >
             {loading ? "Processing..." : "Confirm & Place Order"}
           </button>

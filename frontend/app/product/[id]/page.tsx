@@ -37,19 +37,19 @@ export default async function ProductDetailsPage({
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
-      <div className="max-w-4xl mx-auto">
+    <main className="page-shell">
+      <div className="page-wrap max-w-4xl">
         <Link 
           href="/" 
-          className="text-neutral-400 hover:text-white mb-8 inline-block transition-colors"
+          className="mb-8 inline-block text-sm text-neutral-400 transition-colors hover:text-white"
         >
           &larr; Back to Products
         </Link>
         
-        <div className="bg-neutral-900 rounded-xl p-8 border border-neutral-800 shadow-xl">
+        <div className="panel p-8 shadow-xl shadow-black/30">
           
           <div className="flex justify-between items-start mb-4">
-            <h1 className="text-4xl font-bold">{product.name}</h1>
+            <h1 className="text-4xl font-extrabold tracking-tight">{product.name}</h1>
             
             <span className={`px-3 py-1 rounded-full text-xs font-bold tracking-wider ${
               product.status === 'AVL' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'
@@ -58,7 +58,7 @@ export default async function ProductDetailsPage({
             </span>
           </div>
 
-          <p className="text-xl text-neutral-300 mb-6">{product.desc}</p>
+          <p className="mb-6 text-lg leading-8 text-neutral-300">{product.desc}</p>
           
           <div className="flex items-end justify-between border-t border-neutral-800 pt-6">
             <div>

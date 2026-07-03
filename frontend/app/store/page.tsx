@@ -51,25 +51,22 @@ export default async function StoresPage() {
   const stores = await getStores();
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
-      <div className="max-w-6xl mx-auto">
+    <main className="page-shell">
+      <div className="page-wrap max-w-6xl">
         
-        {/* Header Section */}
         <div className="flex justify-between items-center mb-8 border-b border-neutral-800 pb-4">
-          <h1 className="text-4xl font-bold">All Stores</h1>
+          <h1 className="text-4xl font-extrabold tracking-tight">All Stores</h1>
           
-          {/* Link to whatever page contains the CreateStoreForm we made earlier */}
           <Link 
             href="/store/new" 
-            className="bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-neutral-200 transition-colors"
+            className="btn-primary"
           >
             + New Store
           </Link>
         </div>
 
-        {/* Empty State */}
         {stores.length === 0 ? (
-          <div className="text-center py-20 bg-neutral-900 rounded-xl border border-neutral-800">
+          <div className="panel py-20 text-center">
             <h2 className="text-2xl text-neutral-400">No stores found.</h2>
             <p className="text-neutral-500 mt-2">Create your first store to get started.</p>
           </div>
@@ -77,9 +74,8 @@ export default async function StoresPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {stores.map((store) => (
-              // Make the store cards clickable (e.g., to view store details or edit)
               <Link href={`/store/${store.id}`} key={store.id}>
-                <div className="bg-neutral-900 p-6 rounded-xl border border-neutral-800 hover:border-neutral-600 transition-all hover:-translate-y-1 group">
+                <div className="panel group p-6 transition-all hover:-translate-y-1 hover:border-neutral-600">
                   
                   <div className="flex items-center justify-between mb-4">
                     <h2 className="text-2xl font-semibold group-hover:text-white text-neutral-200 transition-colors">

@@ -22,22 +22,27 @@ export default async function HomePage() {
   const products = await getProducts();
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
+    <main className="page-shell">
+      <div className="page-wrap">
+      <div className="mb-8 flex items-end justify-between gap-4 border-b border-neutral-800 pb-5">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight">Featured Products</h1>
+          <p className="mt-1 text-sm text-neutral-400">Curated picks from stores around you.</p>
+        </div>
+      </div>
 
-      {/* Grid Display */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {products.map((product) => (
-          // The key belongs ONLY here on the outermost element
           <Link href={`/product/${product.id}`} key={product.id}>
             <ProductCard product={product} />
           </Link>
         ))}
       </div>
+      </div>
 
-      {/* Floating Action Button - Now links to the create page */}
       <Link 
         href="/product/new"
-        className="fixed bottom-10 right-10 w-16 h-16 bg-white text-black rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-105 transition-transform"
+        className="fixed bottom-7 right-7 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-3xl text-white shadow-lg shadow-blue-900/30 transition hover:scale-105 hover:bg-blue-700"
       >
         +
       </Link>

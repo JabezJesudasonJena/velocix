@@ -48,7 +48,6 @@ export default function CreateProductPage() {
 
     // 2. Parse the storeId from the form data
     const parsedStoreId = parseInt(formData.storeId);
-    console.log(images)
     const payload = {
       name: formData.name,
       price: parseFloat(formData.price),
@@ -60,8 +59,6 @@ export default function CreateProductPage() {
     };
 
     try {
-      console.log(payload)
-      console.log(parsedStoreId)
       const response = await fetchClient("/product/add", {
         method: "POST",
         body: JSON.stringify({
@@ -87,26 +84,24 @@ export default function CreateProductPage() {
   };
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
-      <div className="max-w-2xl mx-auto">
-        {/* Adjusted the back button since we don't have a specific store yet */}
+    <main className="page-shell">
+      <div className="page-wrap max-w-2xl">
         <button 
           onClick={() => router.back()}
-          className="text-neutral-400 hover:text-white mb-6 inline-block transition-colors"
+          className="mb-6 inline-block text-sm text-neutral-400 transition-colors hover:text-white"
         >
           &larr; Go Back
         </button>
 
-        <h1 className="text-3xl font-bold mb-8">Add New Product</h1>
+        <h1 className="mb-8 text-3xl font-extrabold tracking-tight">Add New Product</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-6 bg-neutral-900 p-8 rounded-xl border border-neutral-800 shadow-2xl">
+        <form onSubmit={handleSubmit} className="panel space-y-6 p-8 shadow-2xl shadow-black/30">
           {error && (
             <div className="bg-red-900/40 border border-red-800 text-red-200 p-4 rounded-lg text-sm">
               {error}
             </div>
           )}
 
-          {/* Product Name */}
           <div>
             <label className="block text-sm font-medium text-neutral-400 mb-2">Product Name *</label>
             <input
@@ -115,13 +110,12 @@ export default function CreateProductPage() {
               required
               value={formData.name}
               onChange={handleInputChange}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+              className="field"
               placeholder="e.g. Wireless Headphones"
             />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Price */}
             <div>
               <label className="block text-sm font-medium text-neutral-400 mb-2">Price ($) *</label>
               <input
@@ -131,12 +125,11 @@ export default function CreateProductPage() {
                 required
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+                className="field"
                 placeholder="0.00"
               />
             </div>
 
-            {/* Stock Quantity */}
             <div>
               <label className="block text-sm font-medium text-neutral-400 mb-2">Initial Stock Quantity *</label>
               <input
@@ -145,14 +138,13 @@ export default function CreateProductPage() {
                 required
                 value={formData.quantity}
                 onChange={handleInputChange}
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+                className="field"
                 placeholder="0"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* SKU */}
             <div>
               <label className="block text-sm font-medium text-neutral-400 mb-2">SKU *</label>
               <input
@@ -161,12 +153,11 @@ export default function CreateProductPage() {
                 required
                 value={formData.sku}
                 onChange={handleInputChange}
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+                className="field"
                 placeholder="PROD-123"
               />
             </div>
 
-            {/* Category ID */}
             <div>
               <label className="block text-sm font-medium text-neutral-400 mb-2">Category ID *</label>
               <input
@@ -175,27 +166,25 @@ export default function CreateProductPage() {
                 required
                 value={formData.categoryId}
                 onChange={handleInputChange}
-                className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+                className="field"
                 placeholder="1"
               />
             </div>
 
-            {/* 4. NEW: Store ID Input */}
             <div>
-              <label className="block text-sm font-medium text-amber-400 mb-2">Store ID *</label>
+              <label className="mb-2 block text-sm font-medium text-blue-400">Store ID *</label>
               <input
                 type="number"
                 name="storeId"
                 required
                 value={formData.storeId}
                 onChange={handleInputChange}
-                className="w-full bg-neutral-950 border border-amber-900/50 rounded-lg p-3 text-white focus:outline-none focus:border-amber-600 transition-colors"
+                className="field border-blue-900/50 focus:border-blue-500"
                 placeholder="Store ID"
               />
             </div>
           </div>
 
-          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-neutral-400 mb-2">Description</label>
             <textarea
@@ -203,12 +192,11 @@ export default function CreateProductPage() {
               rows={4}
               value={formData.desc}
               onChange={handleInputChange}
-              className="w-full bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors resize-none"
+              className="field min-h-28 resize-none"
               placeholder="Provide a detailed description of the product..."
             />
           </div>
 
-          {/* Images Section */}
           <div>
             <label className="block text-sm font-medium text-neutral-400 mb-2">Product Images (URLs)</label>
             <div className="flex gap-2 mb-3">
@@ -216,19 +204,18 @@ export default function CreateProductPage() {
                 type="url"
                 value={imageUrlInput}
                 onChange={(e) => setImageUrlInput(e.target.value)}
-                className="flex-1 bg-neutral-950 border border-neutral-800 rounded-lg p-3 text-white focus:outline-none focus:border-neutral-600 transition-colors"
+                className="field flex-1"
                 placeholder="https://example.com/image.jpg"
               />
               <button
                 type="button"
                 onClick={addImageUrl}
-                className="bg-neutral-800 hover:bg-neutral-700 px-4 rounded-lg font-medium transition-colors"
+                className="btn-secondary px-4"
               >
                 Add
               </button>
             </div>
 
-            {/* Added Images List */}
             {images.length > 0 && (
               <ul className="bg-neutral-950 border border-neutral-800 rounded-lg p-3 space-y-2 max-h-40 overflow-y-auto">
                 {images.map((url, idx) => (
@@ -247,11 +234,10 @@ export default function CreateProductPage() {
             )}
           </div>
 
-          {/* Submit Action */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white text-black font-semibold p-4 rounded-lg hover:bg-neutral-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+            className="btn-primary mt-4 w-full p-4 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {loading ? "Creating Product..." : "Create Product"}
           </button>

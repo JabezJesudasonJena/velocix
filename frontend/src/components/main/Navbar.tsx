@@ -76,35 +76,35 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between items-center p-6 border-b border-neutral-800">
-      
-      {/* 1. Left side: Brand Logo */}
-      <div className="flex-shrink-0">
-        <Link href="/" className="text-xl font-bold">Velocix</Link>
+    <nav className="sticky top-0 z-30 border-b border-neutral-800/80 bg-[#0d0f12]/90 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6 lg:px-10">
+      <div className="flex items-center gap-2 flex-shrink-0">
+        <Link href="/" className="text-xl font-extrabold tracking-tight text-white">Velocix</Link>
+        <span className="hidden rounded-full border border-neutral-700 bg-neutral-900/70 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 sm:block">
+          Local Commerce
+        </span>
       </div>
 
-      {/* 2. Middle: Search Bar */}
-      <div className="flex-1 max-w-xl mx-8 hidden md:block">
+      <div className="hidden flex-1 px-2 md:block">
         <SearchBar />
       </div>
       
-      {/* 3. Right side: User Actions */}
-      <div className="flex gap-4 items-center flex-shrink-0">
+      <div className="flex gap-2 items-center flex-shrink-0">
         {loading ? (
-          <div className="h-8 w-24 bg-neutral-800 animate-pulse rounded-lg"></div>
+          <div className="h-9 w-24 bg-neutral-800 animate-pulse rounded-xl"></div>
         ) : (
           <>
             {user ? (
-              <span className="text-sm text-neutral-400 mr-2 capitalize">
-                Welcome, <span className="font-semibold text-white">{user.name}</span>
+              <span className="hidden text-sm text-neutral-400 mr-2 capitalize lg:block">
+                Hello, <span className="font-semibold text-white">{user.name}</span>
               </span>
             ) : (
               pathname === '/login' || pathname === '/signin' ? (
-                <Link href="/signup" className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition">
+                <Link href="/signup" className="btn-secondary">
                   Signup
                 </Link>
               ) : (
-                <Link href="/login" className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition">
+                <Link href="/login" className="btn-secondary">
                   Login
                 </Link>
               )
@@ -112,22 +112,22 @@ export default function Navbar() {
           </>
         )}
         
-        {/* Updated: Converted to Link and applies hydration check */}
         <Link 
           href="/checkout" 
-          className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition block text-center"
+          className="btn-secondary block text-center"
         >
-          Cart [{mounted ? cartCount : 0}]
+          Cart ({mounted ? cartCount : 0})
         </Link>
         
         {user && (
           <button 
             onClick={() => handleLogout(true)}
-            className="px-4 py-2 bg-red-900/20 text-red-500 hover:bg-red-900/40 rounded-lg text-sm transition hover:cursor-pointer"
+            className="rounded-xl border border-red-900/60 bg-red-950/30 px-4 py-2.5 text-sm font-medium text-red-300 transition hover:cursor-pointer hover:bg-red-900/35"
           >
             Logout
           </button>
         )}
+      </div>
       </div>
     </nav>
   );

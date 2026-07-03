@@ -41,7 +41,6 @@ export default function CreateStorePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      console.log(formData)
       const res = await fetchClient("/store/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,35 +55,44 @@ export default function CreateStorePage() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 bg-neutral-900 border border-neutral-800 rounded-2xl">
-      <input 
-        className="w-full bg-neutral-950 p-3 rounded-lg mb-4"
-        placeholder="Store Name"
-        onChange={(e) => setFormData({...formData, name: e.target.value})}
-      />
-      <textarea 
-        className="w-full bg-neutral-950 p-3 rounded-lg mb-4"
-        placeholder="Description"
-        onChange={(e) => setFormData({...formData, desc: e.target.value})}
-      />
-      
-      <div className="flex gap-2 mb-6">
+    <main className="page-shell">
+      <div className="page-wrap max-w-xl">
+      <form onSubmit={handleSubmit} className="panel mx-auto p-8">
+        <h1 className="mb-6 text-3xl font-extrabold tracking-tight">Create Store</h1>
+
+        <label className="mb-1.5 block text-sm font-medium text-neutral-400">Store Name</label>
         <input 
-          readOnly
-          className="flex-1 bg-neutral-950 p-3 rounded-lg"
-          value={`${formData.lat}, ${formData.lng}`}
-          placeholder="Location coordinates"
+          className="field mb-4"
+          placeholder="Store Name"
+          onChange={(e) => setFormData({...formData, name: e.target.value})}
         />
-        <button 
-          type="button" 
-          onClick={handleGetLocation}
-          className="px-4 bg-neutral-800 rounded-lg"
-        >
-          {loading ? "Fetching..." : "Get Location"}
-        </button>
+
+        <label className="mb-1.5 block text-sm font-medium text-neutral-400">Description</label>
+        <textarea 
+          className="field mb-4 min-h-28 resize-none"
+          placeholder="Description"
+          onChange={(e) => setFormData({...formData, desc: e.target.value})}
+        />
+
+        <div className="mb-6 flex gap-2">
+          <input 
+            readOnly
+            className="field flex-1"
+            value={`${formData.lat}, ${formData.lng}`}
+            placeholder="Location coordinates"
+          />
+          <button 
+            type="button" 
+            onClick={handleGetLocation}
+            className="btn-secondary px-4"
+          >
+            {loading ? "Fetching..." : "Get Location"}
+          </button>
+        </div>
+
+        <button className="btn-primary w-full py-3 hover:cursor-pointer">Create Store</button>
+      </form>
       </div>
-      
-      <button className="w-full bg-blue-600 py-3 rounded-lg hover:cursor-pointer">Create Store</button>
-    </form>
+    </main>
   );
 }

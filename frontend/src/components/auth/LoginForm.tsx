@@ -59,11 +59,11 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-neutral-900 p-8 border border-neutral-800 shadow-xl">
+    <form onSubmit={handleSubmit} className="panel p-7 sm:p-8">
       <div className="space-y-4">
         {['email', 'password'].map((field) => (
           <div key={field}>
-            <label className="block text-sm font-medium mb-1 capitalize text-neutral-400">
+            <label className="mb-1.5 block text-sm font-medium capitalize text-neutral-400">
               {field}
             </label>
             <input 
@@ -72,7 +72,7 @@ export default function LoginForm() {
               required
               value={formData[field as keyof typeof formData]}
               onChange={handleChange}
-              className="w-full bg-neutral-950 border border-neutral-800 p-3 focus:ring-2 focus:ring-blue-600 outline-none transition"
+              className="field"
               placeholder={`Enter your ${field}`}
             />
           </div>
@@ -80,7 +80,7 @@ export default function LoginForm() {
         <button 
           type="submit" 
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 transition mt-4 hover:cursor-pointer disabled:opacity-50"
+          className="btn-primary mt-3 w-full py-3 hover:cursor-pointer disabled:opacity-50"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
