@@ -36,7 +36,7 @@ export default async function HomePage() {
 
       {/* Floating Action Button - Now links to the create page */}
       <Link 
-        href="/product/create"
+        href="/product/new"
         className="fixed bottom-10 right-10 w-16 h-16 bg-white text-black rounded-full flex items-center justify-center text-3xl shadow-2xl hover:scale-105 transition-transform"
       >
         +
