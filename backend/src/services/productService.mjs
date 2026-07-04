@@ -8,7 +8,7 @@ const parsePositiveInt = (value, fallback) => {
 };
 
 class ProductService{
-    static async getAllProducts(query = {}){
+    static async getProducts(query = {}){
         const page = parsePositiveInt(query.page, 1);
         const limit = parsePositiveInt(query.limit, 20);
         const skip = (page - 1) * limit;
@@ -25,6 +25,12 @@ class ProductService{
             throw new AppError("No Products", 404)
         }
         return products;
+    }
+
+    static async getAllProducts(){
+        return await prisma.product.findMany({
+            include: {productImages: true}
+        })
     }
 
     static async addProduct(data, user, store){
@@ -53,6 +59,9 @@ class ProductService{
         return await prisma.product.findFirst({
             where:{
                 id: Number(productId)
+            },
+            include: {
+                productImages: true
             }
         });
     }

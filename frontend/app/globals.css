@@ -1,7 +1,106 @@
 @import "tailwindcss";
 
+:root {
+  --bg: #0d0f12;
+  --surface: #151922;
+  --surface-2: #1b2130;
+  --text: #f5f7fa;
+  --muted: #98a2b3;
+  --line: #2b3242;
+  --accent: #2f6df6;
+  --accent-hover: #2557c6;
+}
+
 @layer base {
+  * {
+    @apply border-transparent;
+  }
+
   body {
-    @apply bg-neutral-950 text-neutral-100;
+    background: var(--bg);
+    color: var(--text);
+    @apply antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 18px 18px;
+    opacity: 0.25;
+    z-index: -1;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    @apply outline-none;
+  }
+
+  ::selection {
+    background: rgba(47, 109, 246, 0.28);
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply min-h-[calc(100vh-76px)] px-4 py-8 sm:px-6 lg:px-10;
+  }
+
+  .page-wrap {
+    @apply mx-auto w-full max-w-7xl;
+  }
+
+  .panel {
+    background: color-mix(in srgb, var(--surface) 92%, #000 8%);
+    border: 1px solid var(--line);
+    @apply rounded-2xl;
+  }
+
+  .field {
+    background: color-mix(in srgb, var(--surface-2) 88%, #000 12%);
+    border: 1px solid var(--line);
+    color: var(--text);
+    @apply w-full rounded-xl px-3.5 py-3 text-sm transition;
+  }
+
+  .field:focus {
+    border-color: #4c87ff;
+    box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.18);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    @apply rounded-xl px-4 py-2.5 text-sm font-semibold transition;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+  }
+
+  .btn-secondary {
+    background: color-mix(in srgb, var(--surface-2) 90%, #000 10%);
+    border: 1px solid var(--line);
+    color: var(--text);
+    @apply rounded-xl px-4 py-2.5 text-sm font-medium transition;
+  }
+
+  .btn-secondary:hover {
+    background: color-mix(in srgb, var(--surface-2) 75%, #000 25%);
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+}
+
+@layer base {
+  html,
+  body {
+    @apply min-h-screen;
   }
 }

@@ -169,9 +169,9 @@ model Address {
   addressLine2 String?
   city    String?
   pincode String?
-  userId  Int
+  userId  Int @unique
   village String?
-  is_default Boolean
+  is_default Boolean  
 
   user    User    @relation(fields: [userId], references: [id])
   orders Order[]

@@ -1,14 +1,14 @@
 import SignupForm from "@/src/components/auth/SignupForm";
-import Link from "next/link";
 
 export default function SignupPage() {
   return (
-    <main className="min-h-screen flex flex-col">
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="w-full max-w-4xl grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-4xl font-bold mb-4">A Hyper-local Ecommerce Application</h2>
-            <p className="text-neutral-400">Join our network to experience fast, reliable delivery in your area.</p>
+    <main className="page-shell flex flex-col">
+      <div className="page-wrap flex flex-1 items-center justify-center">
+        <div className="grid w-full max-w-5xl items-center gap-10 lg:grid-cols-2">
+          <div className="space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-400">Create Account</p>
+            <h2 className="text-4xl font-extrabold leading-tight">Join Velocix and start ordering smarter</h2>
+            <p className="max-w-md text-neutral-400">Create your profile to access nearby stores, faster checkout, and order updates.</p>
           </div>
           <SignupForm />
         </div>
