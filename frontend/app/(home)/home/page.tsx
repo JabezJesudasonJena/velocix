@@ -2,7 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { fetchClient } from "@/src/lib/api/apiClient";
+import StoreCard from "@/src/components/store/StoreCard";
+import { Loader2, Navigation, AlertCircle, RefreshCw, Compass } from "lucide-react";
 
 interface Store {
   id: number;
@@ -14,19 +17,27 @@ interface Store {
   distance_km: string;
 }
 
-export default function HomePage() {
+// Dynamically load the map
+const NearbyStoresMap = dynamic(
+  () => import("@/src/components/store/NearbyStoresMap"),
+  { 
+    ssr: false, 
+    loading: () => <div className="h-full w-full bg-neutral-900 animate-pulse rounded-3xl border border-white/5"></div> 
+  }
+);
+
+export default function NearbyStoresPage() {
   const [stores, setStores] = useState<Store[]>([]);
+  const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // New state to manage the manual location prompt
   const [needsLocation, setNeedsLocation] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string>("Checking preferences...");
+  const [statusMessage, setStatusMessage] = useState<string>("Checking coordinates...");
 
-  // 1. Extracted API fetch into a reusable function
   const fetchNearbyStores = async (lat: number, lng: number) => {
     setLoading(true);
-    setStatusMessage("Finding stores near you...");
+    setStatusMessage("Scanning local area...");
     
     try {
       const res = await fetchClient(`/location?lat=${lat}&lng=${lng}`, {
@@ -47,29 +58,25 @@ export default function HomePage() {
     }
   };
 
-  // 2. Check localStorage on initial mount
   useEffect(() => {
     const cachedLocation = localStorage.getItem("userLocation");
 
     if (cachedLocation) {
       try {
         const { lat, lng } = JSON.parse(cachedLocation);
+        setUserLocation({ lat, lng });
         fetchNearbyStores(lat, lng);
       } catch (e) {
-        // If JSON is malformed, clear it and ask again
         localStorage.removeItem("userLocation");
         setNeedsLocation(true);
         setLoading(false);
       }
     } else {
-      // No location saved, prompt the user
       setNeedsLocation(true);
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 3. Handle manual location request via button click
   const handleRequestLocation = () => {
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by your browser.");
@@ -78,15 +85,14 @@ export default function HomePage() {
 
     setLoading(true);
     setError(null);
-    setStatusMessage("Waiting for location permission...");
+    setStatusMessage("Acquiring GPS lock...");
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        
-        // Save to localStorage for next time
         localStorage.setItem("userLocation", JSON.stringify({ lat: latitude, lng: longitude }));
         
+        setUserLocation({ lat: latitude, lng: longitude });
         setNeedsLocation(false);
         fetchNearbyStores(latitude, longitude);
       },
@@ -98,47 +104,50 @@ export default function HomePage() {
     );
   };
 
-  // 4. Allow users to refresh their location if they moved
   const handleRefreshLocation = () => {
     localStorage.removeItem("userLocation");
+    setUserLocation(null);
     setStores([]);
     setNeedsLocation(true);
   };
 
-  // --- RENDER STATES ---
-
+  // --- Premium Loading State ---
   if (loading) {
     return (
-      <main className="page-shell flex flex-col items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mb-4"></div>
-        <p className="text-neutral-400">{statusMessage}</p>
+      <main className="min-h-screen bg-[#040405] flex flex-col items-center justify-center gap-4">
+        <Loader2 className="h-8 w-8 animate-spin text-neutral-600" />
+        <p className="text-sm font-medium tracking-widest text-neutral-500 uppercase">
+          {statusMessage}
+        </p>
       </main>
     );
   }
 
-  // Show the explicit opt-in UI if we need their location
+  // --- Location Opt-in State ---
   if (needsLocation) {
     return (
-      <main className="page-shell flex items-center justify-center">
-        <div className="panel w-full max-w-md p-10 text-center">
-          <div className="w-16 h-16 bg-neutral-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-2xl">📍</span>
+      <main className="min-h-screen bg-[#040405] flex items-center justify-center p-6">
+        <div className="w-full max-w-md p-10 text-center rounded-3xl bg-neutral-900 border border-white/5 shadow-2xl">
+          <div className="w-16 h-16 bg-neutral-950 border border-white/10 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <Navigation className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold mb-4">Find Local Stores</h1>
-          <p className="text-neutral-400 mb-8">
-            To show you the freshest products available nearby, we need to know your current location.
+          <h1 className="text-2xl font-semibold mb-3 text-white tracking-tight">Find Local Stores</h1>
+          <p className="text-neutral-400 mb-8 leading-relaxed">
+            To show you the freshest products available nearby, we need to securely access your current location.
           </p>
           
           {error && (
-            <div className="mb-6 p-4 bg-red-900/30 text-red-400 border border-red-800/50 rounded-lg text-sm text-left">
-              {error}
+            <div className="mb-8 flex items-center gap-3 rounded-xl bg-red-500/10 p-4 border border-red-500/20 text-sm text-red-400 text-left">
+              <AlertCircle className="h-5 w-5 shrink-0" />
+              <p>{error}</p>
             </div>
           )}
 
           <button 
             onClick={handleRequestLocation}
-            className="btn-primary w-full py-3"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-8 text-sm font-bold text-black transition-all hover:bg-neutral-200 active:scale-95 shadow-lg shadow-white/10"
           >
+            <Compass className="h-4 w-4" />
             Share Location
           </button>
         </div>
@@ -146,59 +155,60 @@ export default function HomePage() {
     );
   }
 
-  // Main UI when stores are loaded
+  // --- Main Render: Map + Grid ---
   return (
-    <main className="page-shell">
-      <div className="page-wrap max-w-6xl">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-neutral-800 pb-6 gap-4">
-          <div>
-            <h1 className="text-4xl font-extrabold mb-2 tracking-tight">Stores Near You</h1>
-            <p className="text-neutral-400">Discover fresh products in your local area.</p>
+    <main className="min-h-screen bg-[#040405] selection:bg-white selection:text-black pb-24">
+      <div className="mx-auto max-w-[1400px] px-4 py-12 sm:px-6 lg:px-8 lg:py-16 space-y-12">
+        
+        {/* Header & Map Section */}
+        <section className="flex flex-col gap-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-2">Stores Near You</h1>
+              <p className="text-neutral-400">Discover inventory and fresh products in your local area.</p>
+            </div>
+            <button 
+              onClick={handleRefreshLocation}
+              className="flex items-center gap-2 text-sm font-medium text-neutral-400 hover:text-white transition-colors bg-neutral-900 border border-white/5 px-4 py-2 rounded-full"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              Update location
+            </button>
           </div>
-          <button 
-            onClick={handleRefreshLocation}
-            className="text-sm text-neutral-500 hover:text-white transition-colors underline underline-offset-4 decoration-neutral-800 hover:decoration-neutral-400"
-          >
-            Update my location
-          </button>
-        </div>
 
+          {/* Immersive Map Container */}
+          {userLocation && stores.length > 0 && (
+            <div className="h-[400px] w-full border border-white/5 rounded-3xl shadow-2xl">
+              <NearbyStoresMap 
+                userLat={userLocation.lat} 
+                userLng={userLocation.lng} 
+                stores={stores} 
+              />
+            </div>
+          )}
+        </section>
+
+        {/* Error Banner */}
         {error && (
-          <div className="mb-8 bg-red-900/40 border border-red-800 text-red-200 p-6 rounded-lg">
+          <div className="flex items-center gap-3 rounded-xl bg-red-500/10 p-5 border border-red-500/20 text-sm text-red-400">
+            <AlertCircle className="h-5 w-5 shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
+        {/* Store Grid Section */}
         {!error && stores.length === 0 ? (
-          <div className="text-center py-20 bg-neutral-900 border border-neutral-800 rounded-xl">
-            <p className="text-neutral-400 text-lg">We couldn't find any stores near your location right now.</p>
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-white/5 bg-neutral-900/40 py-24 text-center shadow-inner">
+            <Store className="mb-5 h-12 w-12 text-neutral-600" strokeWidth={1.5} />
+            <h3 className="text-xl font-medium text-white">No stores nearby</h3>
+            <p className="mt-3 max-w-md text-neutral-400 leading-relaxed">
+              We couldn't find any stores near your current location. Try updating your coordinates or check back later.
+            </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
             {stores.map((store) => (
-              <Link 
-                href={`/store/${store.id}`} 
-                key={store.id}
-                className="panel block p-6 transition-colors group hover:border-neutral-600"
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-2xl font-semibold text-white group-hover:text-blue-400 transition-colors">
-                    {store.name}
-                  </h3>
-                  <span className="bg-neutral-800 text-neutral-300 px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap">
-                    {store.distance_km} km
-                  </span>
-                </div>
-                
-                <p className="text-neutral-400 mb-6 line-clamp-2">
-                  {store.desc || "No description available for this store."}
-                </p>
-
-                <div className="flex items-center text-sm">
-                  <div className={`w-2 h-2 rounded-full mr-2 ${store.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-                  <span className="capitalize text-neutral-300">{store.status}</span>
-                </div>
-              </Link>
+              <StoreCard key={store.id} store={store} />
             ))}
           </div>
         )}

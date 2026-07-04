@@ -13,4 +13,11 @@ userRouter.post(
     UserController.setAddress
 );
 
+userRouter.patch(
+    "/edit",
+    protect,
+    UserMidd.userValidity,
+    UserController.updateUserDetails
+)
+
 export default userRouter;
