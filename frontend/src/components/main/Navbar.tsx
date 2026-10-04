@@ -6,6 +6,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/src/redux/store/store';
 import SearchBar from '@/src/components/main/SearchBar'; 
+import { ShoppingBag, LogOut, Zap, User as UserIcon } from 'lucide-react';
 
 interface User {
   name: string;
@@ -19,12 +20,9 @@ export default function Navbar() {
   
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  // Hydration state
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Flag component as mounted on the client to safely render localStorage data
     setMounted(true);
 
     const fetchProfile = async () => {
@@ -76,58 +74,93 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="flex justify-between items-center p-6 border-b border-neutral-800">
-      
-      {/* 1. Left side: Brand Logo */}
-      <div className="flex-shrink-0">
-        <Link href="/" className="text-xl font-bold">Velocix</Link>
-      </div>
+    <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#040405]/80 backdrop-blur-xl">
+      <div className="mx-auto flex h-20 w-full max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:px-8 gap-8">
+        
+        {/* --- Brand / Logo --- */}
+        <div className="flex items-center gap-2 shrink-0">
+          <Link href="/" className="group flex items-center gap-2.5 outline-none">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-black transition-transform group-hover:scale-105">
+              <Zap className="h-5 w-5 fill-black" strokeWidth={1} />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white hidden sm:block">Velocix</span>
+          </Link>
+        </div>
 
-      {/* 2. Middle: Search Bar */}
-      <div className="flex-1 max-w-xl mx-8 hidden md:block">
-        <SearchBar />
-      </div>
-      
-      {/* 3. Right side: User Actions */}
-      <div className="flex gap-4 items-center flex-shrink-0">
-        {loading ? (
-          <div className="h-8 w-24 bg-neutral-800 animate-pulse rounded-lg"></div>
-        ) : (
-          <>
-            {user ? (
-              <span className="text-sm text-neutral-400 mr-2 capitalize">
-                Welcome, <span className="font-semibold text-white">{user.name}</span>
-              </span>
-            ) : (
-              pathname === '/login' || pathname === '/signin' ? (
-                <Link href="/signup" className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition">
-                  Signup
-                </Link>
-              ) : (
-                <Link href="/login" className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition">
-                  Login
-                </Link>
-              )
-            )}
-          </>
-        )}
+        {/* --- Center: Search Bar --- */}
+        <div className="flex-1 max-w-2xl hidden md:block">
+          <SearchBar />
+        </div>
         
-        {/* Updated: Converted to Link and applies hydration check */}
-        <Link 
-          href="/checkout" 
-          className="px-4 py-2 border border-neutral-800 rounded-lg text-sm hover:bg-neutral-800 transition block text-center"
-        >
-          Cart [{mounted ? cartCount : 0}]
-        </Link>
-        
-        {user && (
-          <button 
-            onClick={() => handleLogout(true)}
-            className="px-4 py-2 bg-red-900/20 text-red-500 hover:bg-red-900/40 rounded-lg text-sm transition hover:cursor-pointer"
+        {/* --- Right Actions --- */}
+        <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+          
+          {/* User Status / Auth */}
+          {loading ? (
+            <div className="h-8 w-24 bg-neutral-900 animate-pulse rounded-full"></div>
+          ) : user ? (
+            <div className="flex items-center gap-4 sm:gap-6">
+              
+              {/* Profile Link Wrapper */}
+              <Link 
+                href="/profile" 
+                className="group hidden lg:flex items-center gap-2 outline-none"
+              >
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-900 border border-white/10 text-neutral-400 transition-colors duration-300 group-hover:bg-white group-hover:text-black group-focus-visible:ring-2 group-focus-visible:ring-white">
+                  <UserIcon className="h-4 w-4" />
+                </div>
+                <span className="text-sm font-medium text-neutral-300 capitalize transition-colors duration-300 group-hover:text-white">
+                  {user.name}
+                </span>
+              </Link>
+
+              <button 
+                onClick={() => handleLogout(true)}
+                title="Sign out"
+                className="text-sm font-medium text-neutral-500 transition-colors hover:text-white"
+              >
+                Sign out
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-4">
+              {pathname !== '/login' && (
+                <Link 
+                  href="/login" 
+                  className="hidden sm:block text-sm font-medium text-neutral-400 transition-colors hover:text-white"
+                >
+                  Sign in
+                </Link>
+              )}
+              {pathname !== '/signup' && (
+                <Link 
+                  href="/signup" 
+                  className="flex h-10 items-center justify-center rounded-full bg-white px-5 text-sm font-semibold text-black transition-all hover:bg-neutral-200 hover:scale-105 active:scale-95"
+                >
+                  Create account
+                </Link>
+              )}
+            </div>
+          )}
+          
+          <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
+
+          {/* Cart Icon with Floating Badge */}
+          <Link 
+            href="/checkout" 
+            className="group relative flex h-10 w-10 items-center justify-center rounded-full bg-neutral-900 border border-white/5 transition-colors hover:bg-neutral-800 outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#040405]"
           >
-            Logout
-          </button>
-        )}
+            <ShoppingBag className="h-4 w-4 text-neutral-300 transition-colors group-hover:text-white" />
+            
+            {/* The Notification Bubble */}
+            {mounted && cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white text-[10px] font-bold text-black ring-2 ring-[#040405]">
+                {cartCount}
+              </span>
+            )}
+          </Link>
+          
+        </div>
       </div>
     </nav>
   );

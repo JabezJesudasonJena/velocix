@@ -34,9 +34,10 @@ export default async function SearchResultsPage({
   // If the user navigated to /search without a query, return early
   if (!query) {
     return (
-      <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8 flex flex-col items-center justify-center">
-        <h1 className="text-2xl font-bold mb-4">Please enter a search term</h1>
-        <Link href="/" className="text-neutral-400 hover:text-white underline">
+      <main className="page-shell flex flex-col items-center justify-center text-center">
+        <h1 className="mb-3 text-2xl font-bold">Please enter a search term</h1>
+        <p className="mb-5 text-neutral-400">Use the search input in the top navigation to find products.</p>
+        <Link href="/" className="btn-secondary">
           Go back home
         </Link>
       </main>
@@ -47,22 +48,21 @@ export default async function SearchResultsPage({
   const products = await fetchSearchResults(query);
 
   return (
-    <main className="min-h-screen bg-neutral-950 text-neutral-100 p-8">
-      <div className="max-w-6xl mx-auto">
+    <main className="page-shell">
+      <div className="page-wrap max-w-6xl">
         
         <div className="mb-8">
-          <Link href="/" className="text-neutral-500 hover:text-white transition-colors mb-4 inline-block">
+          <Link href="/" className="mb-4 inline-block text-sm text-neutral-500 transition-colors hover:text-white">
             &larr; Back to Home
           </Link>
-          <h1 className="text-3xl font-bold">
-            Search Results for <span className="text-amber-500">"{query}"</span>
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            Search Results for <span className="text-blue-400">"{query}"</span>
           </h1>
           <p className="text-neutral-400 mt-2">Found {products.length} products</p>
         </div>
 
-        {/* Display logic based on results length */}
         {products.length === 0 ? (
-          <div className="bg-neutral-900 border border-neutral-800 rounded-xl p-12 text-center mt-10">
+          <div className="panel mt-10 p-12 text-center">
             <h2 className="text-2xl font-semibold mb-2">No products found</h2>
             <p className="text-neutral-500">Try adjusting your search or checking for typos.</p>
           </div>
